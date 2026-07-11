@@ -1,7 +1,8 @@
-/* ==========================================================
-   CONFIGURAÇÃO DAS IMAGENS
-   ========================================================== */
+// ==========================================================
+// CONFIGURAÇÃO — URLs DIRETOS (sem pasta local)
+// ==========================================================
 const IMAGE_URLS = {
+  capa: "https://i.postimg.cc/zXL4Tfbn/capa.png",
   img01: "https://i.postimg.cc/d16CMmV4/img01.jpg",
   img02: "https://i.postimg.cc/k4qShhq2/img02.png",
   img03: "https://i.postimg.cc/26GWpFSQ/img03.jpg",
@@ -21,308 +22,165 @@ const IMAGE_URLS = {
   img17: "https://i.postimg.cc/ZRHNkF5j/img17.jpg",
   img18: "https://i.postimg.cc/76wzQQwb/img18.png",
   img19: "https://i.postimg.cc/Qtm7Lkdm/img19.jpg",
-  img20: "https://i.postimg.cc/fLDdggD7/img20.png",
-  capa: "https://i.postimg.cc/zXL4Tfbn/capa.png",
+  img20: "https://i.postimg.cc/fLDdggD7/img20.png"
 };
 
-/* ==========================================================
-   CARTAS — Cada par: img01+img02, img03+img04, ... img19+img20
-   ========================================================== */
-const CARDS = [
-  { id: "img01", pair: 1, type: "symbol", alt: "Símbolo Adinkra 1" },
-  { id: "img02", pair: 1, type: "illustration", alt: "Representação Adinkra 1" },
-  { id: "img03", pair: 2, type: "symbol", alt: "Símbolo Adinkra 2" },
-  { id: "img04", pair: 2, type: "illustration", alt: "Representação Adinkra 2" },
-  { id: "img05", pair: 3, type: "symbol", alt: "Símbolo Adinkra 3" },
-  { id: "img06", pair: 3, type: "illustration", alt: "Representação Adinkra 3" },
-  { id: "img07", pair: 4, type: "symbol", alt: "Símbolo Adinkra 4" },
-  { id: "img08", pair: 4, type: "illustration", alt: "Representação Adinkra 4" },
-  { id: "img09", pair: 5, type: "symbol", alt: "Símbolo Adinkra 5" },
-  { id: "img10", pair: 5, type: "illustration", alt: "Representação Adinkra 5" },
-  { id: "img11", pair: 6, type: "symbol", alt: "Símbolo Adinkra 6" },
-  { id: "img12", pair: 6, type: "illustration", alt: "Representação Adinkra 6" },
-  { id: "img13", pair: 7, type: "symbol", alt: "Símbolo Adinkra 7" },
-  { id: "img14", pair: 7, type: "illustration", alt: "Representação Adinkra 7" },
-  { id: "img15", pair: 8, type: "symbol", alt: "Símbolo Adinkra 8" },
-  { id: "img16", pair: 8, type: "illustration", alt: "Representação Adinkra 8" },
-  { id: "img17", pair: 9, type: "symbol", alt: "Símbolo Adinkra 9" },
-  { id: "img18", pair: 9, type: "illustration", alt: "Representação Adinkra 9" },
-  { id: "img19", pair: 10, type: "symbol", alt: "Símbolo Adinkra 10" },
-  { id: "img20", pair: 10, type: "illustration", alt: "Representação Adinkra 10" },
+// Cada carta sabe quem é seu par
+const PAIRS = [
+  { id: "img01", pair: "img02", alt: "Gye Nyame", url: IMAGE_URLS.img01 },
+  { id: "img02", pair: "img01", alt: "Gye Nyame", url: IMAGE_URLS.img02 },
+  { id: "img03", pair: "img04", alt: "Sankofa", url: IMAGE_URLS.img03 },
+  { id: "img04", pair: "img03", alt: "Sankofa", url: IMAGE_URLS.img04 },
+  { id: "img05", pair: "img06", alt: "Dwennimmen", url: IMAGE_URLS.img05 },
+  { id: "img06", pair: "img05", alt: "Dwennimmen", url: IMAGE_URLS.img06 },
+  { id: "img07", pair: "img08", alt: "Adinkrahene", url: IMAGE_URLS.img07 },
+  { id: "img08", pair: "img07", alt: "Adinkrahene", url: IMAGE_URLS.img08 },
+  { id: "img09", pair: "img10", alt: "Nkyinkyim", url: IMAGE_URLS.img09 },
+  { id: "img10", pair: "img09", alt: "Nkyinkyim", url: IMAGE_URLS.img10 },
+  { id: "img11", pair: "img12", alt: "Funtunfunefu", url: IMAGE_URLS.img11 },
+  { id: "img12", pair: "img11", alt: "Funtunfunefu", url: IMAGE_URLS.img12 },
+  { id: "img13", pair: "img14", alt: "Akoben", url: IMAGE_URLS.img13 },
+  { id: "img14", pair: "img13", alt: "Akoben", url: IMAGE_URLS.img14 },
+  { id: "img15", pair: "img16", alt: "Kete Pa", url: IMAGE_URLS.img15 },
+  { id: "img16", pair: "img15", alt: "Kete Pa", url: IMAGE_URLS.img16 },
+  { id: "img17", pair: "img18", alt: "Nyame Nti", url: IMAGE_URLS.img17 },
+  { id: "img18", pair: "img17", alt: "Nyame Nti", url: IMAGE_URLS.img18 },
+  { id: "img19", pair: "img20", alt: "Akoma", url: IMAGE_URLS.img19 },
+  { id: "img20", pair: "img19", alt: "Akoma", url: IMAGE_URLS.img20 }
 ];
 
-const CARD_BACK_ID = "capa";
+const MEANINGS = [
+  { symbolId: "img01", illustrationId: "img02", name: "Gye Nyame", translation: "Supremacia de Deus", description: "Representa o reconhecimento da onipotência e supremacia de Deus. Ensina humildade e fé no divino." },
+  { symbolId: "img03", illustrationId: "img04", name: "Sankofa", translation: "Retornar e buscar", description: "Símbolo do aprendizado com o passado. Ensina que é permitido voltar atrás para buscar o que se esqueceu." },
+  { symbolId: "img05", illustrationId: "img06", name: "Dwennimmen", translation: "Força e Humildade", description: "Representa a força combinada com a humildade, como o búfalo que é forte mas modesto." },
+  { symbolId: "img07", illustrationId: "img08", name: "Adinkrahene", translation: "Liderança", description: "Símbolo da grandeza e da liderança carismática. Inspira autoridade exercida com sabedoria." },
+  { symbolId: "img09", illustrationId: "img10", name: "Nkyinkyim", translation: "Iniciativa e Dinamismo", description: "Representa a versatilidade e a capacidade de se adaptar aos diferentes caminhos da vida." },
+  { symbolId: "img11", illustrationId: "img12", name: "Funtunfunefu Denkyemfunefu", translation: "Democracia e Unidade", description: "Dois crocodilos que compartilham o mesmo estômago. Simboliza a união na diversidade e a cooperação." },
+  { symbolId: "img13", illustrationId: "img14", name: "Akoben", translation: "Chamada à Ação", description: "Representa o grito de guerra que mobiliza para a ação. Inspira coragem e protagonismo." },
+  { symbolId: "img15", illustrationId: "img16", name: "Kete Pa", translation: "Bom Leito", description: "Simboliza o amor e o cuidado no matrimônio. Representa a importância da base familiar estável." },
+  { symbolId: "img17", illustrationId: "img18", name: "Nyame Nti", translation: "Pela Graça de Deus", description: "Representa a fé e a confiança na providência divina para todas as coisas." },
+  { symbolId: "img19", illustrationId: "img20", name: "Akoma", translation: "Coração", description: "Simboliza a paciência, a tolerância e o amor. Ensina a levar a vida com leveza e compreensão." }
+];
+
 const TOTAL_PAIRS = 10;
 
 /* ==========================================================
-   SIGNIFICADOS
-   ========================================================== */
-const MEANINGS = [
-  {
-    symbolId: "img01",
-    illustrationId: "img02",
-    name: "Gye Nyame",
-    translation: "Exceto Deus",
-    description: "Expressa a onipotência e supremacia de Deus. Ensina que nada acontece sem a vontade divina, promovendo humildade e fé.",
-  },
-  {
-    symbolId: "img03",
-    illustrationId: "img04",
-    name: "Sankofa",
-    translation: "Volte e busque",
-    description: "Representa a importância de resgatar o passado para construir o futuro. Ensina que é válido retornar para buscar o que foi deixado para trás.",
-  },
-  {
-    symbolId: "img05",
-    illustrationId: "img06",
-    name: "Dwennimmen",
-    translation: "Chifres do carneiro",
-    description: "Simboliza a força e a humildade. Lembra que a verdadeira força está em ser humilde, mas também em saber se defender quando necessário.",
-  },
-  {
-    symbolId: "img07",
-    illustrationId: "img08",
-    name: "Funtunfunefu",
-    translation: "Denkyem e Osebo",
-    description: "Representa a democracia e a unidade na diversidade. Ensina que a cooperação mútua é essencial para o bem comum.",
-  },
-  {
-    symbolId: "img09",
-    illustrationId: "img10",
-    name: "Epa",
-    translation: "Grilhões",
-    description: "Simboliza a escravidão, a lei e a autoridade. Também representa a justiça e a necessidade de liberdade com responsabilidade.",
-  },
-  {
-    symbolId: "img11",
-    illustrationId: "img12",
-    name: "Kintinkantan",
-    translation: "Pride",
-    description: "Representa a exaltação da dignidade e da autoestima. Ensina a valorizar as próprias raízes e a cultura com orgulho.",
-  },
-  {
-    symbolId: "img13",
-    illustrationId: "img14",
-    name: "Nkyinkyin",
-    translation: "Tortuosidades",
-    description: "Simboliza a capacidade de se adaptar e superar obstáculos. Representa a resiliência diante das dificuldades da vida.",
-  },
-  {
-    symbolId: "img15",
-    illustrationId: "img16",
-    name: "Nea Onnim",
-    translation: "Aquele que não sabe",
-    description: "Representa o aprendizado contínuo e a sabedoria. Ensina que reconhecer a própria ignorância é o primeiro passo para o conhecimento.",
-  },
-  {
-    symbolId: "img17",
-    illustrationId: "img18",
-    name: "Se Wo Were Fi",
-    translation: "Se você esquecer",
-    description: "Simboliza a importância da memória e da gratidão. Lembra a necessidade de honrar as origens e as pessoas que nos ajudaram.",
-  },
-  {
-    symbolId: "img19",
-    illustrationId: "img20",
-    name: "Tamfo Bebre",
-    translation: "O inimigo sofrerá",
-    description: "Representa a justiça e o equilíbrio kármico. Ensina que as más ações trazem consequências negativas, incentivando a bondade.",
-  },
-];
-
-/* ==========================================================
-   CACHE DE IMAGENS
-   ========================================================== */
-const imageCache = {};
-
-function loadImage(src) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(src);
-    img.src = src;
-  });
-}
-
-function cloneCachedImage(id, alt) {
-  const cached = imageCache[id];
-  if (!cached) return document.createElement("img");
-  const clone = cached.cloneNode(true);
-  clone.alt = alt || "";
-  clone.removeAttribute("id");
-  return clone;
-}
-
-/* ==========================================================
-   UTILITÁRIOS
-   ========================================================== */
-function $(id) {
-  return document.getElementById(id);
-}
-
-function shuffle(array) {
-  const copy = [...array];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
-
-/* ==========================================================
-   ELEMENTOS DO DOM
-   ========================================================== */
+ELEMENTOS
+========================================================== */
+const $ = (id) => document.getElementById(id);
 const initialScreen = $("initialScreen");
 const gameScreen = $("gameScreen");
 const meaningScreen = $("meaningScreen");
 const resultModal = $("resultModal");
-const memoryGrid = $("memoryGrid");
-const loadingBar = $("loadingBar");
-const loadingText = $("loadingText");
-const loadingPercentage = $("loadingPercentage");
-const loadingCounter = $("loadingCounter");
-const loadingTrack = $("loadingTrack");
-const startButton = $("startButton");
-const localModeInfo = $("localModeInformation");
 
 /* ==========================================================
-   ESTADO DO JOGO
-   ========================================================== */
+ESTADO DO JOGO
+========================================================== */
 let firstCard = null;
 let secondCard = null;
 let boardLocked = false;
 let moves = 0;
 let matchedPairs = 0;
 let elapsedSeconds = 0;
-let timerInterval = null;
 let timerStarted = false;
+let timerInterval = null;
 let meaningRendered = false;
-let preloadComplete = false;
 
 /* ==========================================================
-   PRÉ-CARREGAMENTO
-   ========================================================== */
-async function preloadAllResources() {
-  const allIds = Object.keys(IMAGE_URLS);
-  const total = allIds.length;
-  let loaded = 0;
-
-  loadingTrack.setAttribute("aria-valuemax", String(total));
-
-  const updateProgress = () => {
-    loaded++;
-    const pct = Math.round((loaded / total) * 100);
-    loadingBar.style.width = `${pct}%`;
-    loadingPercentage.textContent = `${pct}%`;
-    loadingCounter.textContent = `${loaded} de ${total} recursos preparados`;
-    loadingTrack.setAttribute("aria-valuenow", String(loaded));
-  };
-
-  const promises = allIds.map((id) =>
-    loadImage(IMAGE_URLS[id])
-      .then((img) => {
-        imageCache[id] = img;
-        updateProgress();
-      })
-      .catch(() => {
-        updateProgress();
-      })
-  );
-
-  await Promise.all(promises);
-
-  loadingText.textContent = "Imagens preparadas!";
-  localModeInfo.style.display = "flex";
-  startButton.hidden = false;
-  startButton.disabled = false;
-  preloadComplete = true;
-
-  /* Atualiza prévia com 3 imagens aleatórias */
-  const previewIds = ["img01", "img03", "img05"];
-  $("previewImage1").src = IMAGE_URLS[previewIds[0]];
-  $("previewImage2").src = IMAGE_URLS[previewIds[1]];
-  $("previewImage3").src = IMAGE_URLS[previewIds[2]];
+UTILIDADES
+========================================================== */
+function shuffle(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
-/* ==========================================================
-   NAVEGAÇÃO ENTRE TELAS
-   ========================================================== */
+function formatTime(totalSeconds) {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
 function showOnlyScreen(screen) {
   [initialScreen, gameScreen, meaningScreen].forEach((s) => {
-    if (s === screen) {
-      s.hidden = false;
-      s.setAttribute("aria-hidden", "false");
-      window.setTimeout(() => s.classList.add("is-visible"), 30);
-    } else {
-      s.hidden = true;
-      s.setAttribute("aria-hidden", "true");
-      s.classList.remove("is-visible");
-    }
+    s.hidden = true;
+    s.setAttribute("aria-hidden", "true");
+    s.classList.remove("is-visible");
   });
+  screen.hidden = false;
+  screen.setAttribute("aria-hidden", "false");
+  // Força reflow para animação CSS
+  void screen.offsetWidth;
+  screen.classList.add("is-visible");
   document.body.classList.toggle("page-locked", screen === initialScreen);
 }
 
+/* ==========================================================
+TELA INICIAL → JOGO
+========================================================== */
 function openGameScreen() {
+  resetGameState();
   createBoard();
   showOnlyScreen(gameScreen);
   window.scrollTo({ top: 0, behavior: "smooth" });
-  window.setTimeout(() => {
-    memoryGrid.querySelector(".memory-card")?.focus();
-  }, 100);
-}
-
-function returnToInitialScreen() {
-  closeResultModal();
-  resetGameState();
-  showOnlyScreen(initialScreen);
 }
 
 /* ==========================================================
-   CRIAR TABULEIRO
-   ========================================================== */
+CRIAR TABULEIRO
+========================================================== */
 function createBoard() {
-  memoryGrid.innerHTML = "";
+  const grid = $("memoryGrid");
+  grid.innerHTML = "";
   const fragment = document.createDocumentFragment();
-  const shuffledCards = shuffle(CARDS);
+  const cards = shuffle(PAIRS);
 
-  shuffledCards.forEach((cardData, index) => {
-    const cardButton = document.createElement("button");
-    cardButton.type = "button";
-    cardButton.className = `memory-card ${cardData.type}-card`;
-    cardButton.dataset.id = cardData.id;
-    cardButton.dataset.pair = String(cardData.pair);
-    cardButton.setAttribute("aria-label", `Carta ${index + 1}, fechada`);
+  cards.forEach((card, index) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "memory-card";
+    btn.dataset.id = card.id;
+    btn.dataset.pair = card.pair;
+    btn.setAttribute("aria-label", `Carta ${index + 1}, fechada`);
 
-    const cardInner = document.createElement("span");
-    cardInner.className = "memory-card-inner";
+    const inner = document.createElement("span");
+    inner.className = "memory-card-inner";
 
-    /* VERSO DA CARTA — capa */
-    const cardBack = document.createElement("span");
-    cardBack.className = "memory-card-face memory-card-back";
-    cardBack.setAttribute("aria-hidden", "true");
-    cardBack.appendChild(cloneCachedImage(CARD_BACK_ID, ""));
+    // VERSO (capa)
+    const back = document.createElement("span");
+    back.className = "memory-card-face memory-card-back";
+    back.setAttribute("aria-hidden", "true");
+    const backImg = document.createElement("img");
+    backImg.src = IMAGE_URLS.capa;
+    backImg.alt = "";
+    backImg.loading = "eager";
+    back.appendChild(backImg);
 
-    /* FRENTE DA CARTA */
-    const cardFront = document.createElement("span");
-    cardFront.className = "memory-card-face memory-card-front";
-    cardFront.appendChild(cloneCachedImage(cardData.id, cardData.alt));
+    // FRENTE (imagem do par)
+    const front = document.createElement("span");
+    front.className = "memory-card-face memory-card-front";
+    const frontImg = document.createElement("img");
+    frontImg.src = card.url;
+    frontImg.alt = card.alt;
+    frontImg.loading = "eager";
+    front.appendChild(frontImg);
 
-    cardInner.append(cardBack, cardFront);
-    cardButton.appendChild(cardInner);
-    cardButton.addEventListener("click", () => flipCard(cardButton));
-    fragment.appendChild(cardButton);
+    inner.append(back, front);
+    btn.appendChild(inner);
+    btn.addEventListener("click", () => flipCard(btn));
+    fragment.appendChild(btn);
   });
 
-  memoryGrid.appendChild(fragment);
+  grid.appendChild(fragment);
 }
 
 /* ==========================================================
-   VIRAR CARTA
-   ========================================================== */
+JOGADA
+========================================================== */
 function flipCard(card) {
-  const alreadyFlipped = card.classList.contains("is-flipped");
-  const alreadyMatched = card.classList.contains("is-matched");
-  if (boardLocked || alreadyFlipped || alreadyMatched) return;
+  if (boardLocked || card.classList.contains("is-flipped") || card.classList.contains("is-matched")) return;
 
   startTimer();
   card.classList.add("is-flipped");
@@ -335,17 +193,14 @@ function flipCard(card) {
   }
 
   secondCard = card;
-  moves += 1;
+  moves++;
   updateGameStatus();
   checkSelectedPair();
 }
 
-/* ==========================================================
-   VERIFICAR PAR
-   ========================================================== */
 function checkSelectedPair() {
-  const isMatchingPair = firstCard.dataset.pair === secondCard.dataset.pair;
-  if (isMatchingPair) {
+  const isMatch = firstCard.dataset.pair === secondCard.dataset.id;
+  if (isMatch) {
     registerMatchedPair();
   } else {
     hideIncorrectCards();
@@ -354,18 +209,16 @@ function checkSelectedPair() {
 
 function registerMatchedPair() {
   boardLocked = true;
-  const matchedCards = [firstCard, secondCard];
-  matchedCards.forEach((card) => {
-    card.classList.add("is-matched");
-    card.disabled = true;
-    card.setAttribute("aria-label", "Carta encontrada");
+  [firstCard, secondCard].forEach((c) => {
+    c.classList.add("is-matched");
+    c.disabled = true;
+    c.setAttribute("aria-label", "Carta encontrada");
   });
-
-  matchedPairs += 1;
+  matchedPairs++;
   updateGameStatus();
   $("gameInstruction").textContent = "Muito bem! Você encontrou um par.";
 
-  window.setTimeout(() => {
+  setTimeout(() => {
     clearSelectedCards();
     boardLocked = false;
     if (matchedPairs === TOTAL_PAIRS) {
@@ -382,7 +235,7 @@ function hideIncorrectCards() {
   secondCard.classList.add("is-wrong");
   $("gameInstruction").textContent = "As imagens não formam um par. Observe novamente.";
 
-  window.setTimeout(() => {
+  setTimeout(() => {
     firstCard.classList.remove("is-flipped", "is-wrong");
     secondCard.classList.remove("is-flipped", "is-wrong");
     firstCard.setAttribute("aria-label", "Carta fechada");
@@ -399,45 +252,34 @@ function clearSelectedCards() {
 }
 
 /* ==========================================================
-   CRONÔMETRO
-   ========================================================== */
+CRONÔMETRO
+========================================================== */
 function startTimer() {
   if (timerStarted) return;
   timerStarted = true;
-  timerInterval = window.setInterval(() => {
-    elapsedSeconds += 1;
+  timerInterval = setInterval(() => {
+    elapsedSeconds++;
     $("timer").textContent = formatTime(elapsedSeconds);
   }, 1000);
 }
 
 function stopTimer() {
-  if (timerInterval !== null) {
-    window.clearInterval(timerInterval);
-  }
+  if (timerInterval) clearInterval(timerInterval);
   timerInterval = null;
   timerStarted = false;
 }
 
-function formatTime(totalSeconds) {
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-}
-
 /* ==========================================================
-   ATUALIZAR INFORMAÇÕES
-   ========================================================== */
+ATUALIZAR STATUS
+========================================================== */
 function updateGameStatus() {
   $("movesCounter").textContent = String(moves);
   $("pairsCounter").textContent = String(matchedPairs);
-  const percentage = (matchedPairs / TOTAL_PAIRS) * 100;
-  $("pairsProgressBar").style.width = `${percentage}%`;
+  const pct = (matchedPairs / TOTAL_PAIRS) * 100;
+  $("pairsProgressBar").style.width = `${pct}%`;
   $("pairsProgress").setAttribute("aria-valuenow", String(matchedPairs));
 }
 
-/* ==========================================================
-   REDEFINIR PARTIDA
-   ========================================================== */
 function resetGameState() {
   stopTimer();
   firstCard = null;
@@ -455,39 +297,34 @@ function resetGameState() {
   $("completionPanel").hidden = true;
 }
 
+/* ==========================================================
+REINICIAR / FINALIZAR
+========================================================== */
 function restartGame() {
   closeResultModal();
   resetGameState();
   createBoard();
   showOnlyScreen(gameScreen);
   window.scrollTo({ top: 0, behavior: "smooth" });
-  window.setTimeout(() => {
-    memoryGrid.querySelector(".memory-card")?.focus();
-  }, 100);
 }
 
-/* ==========================================================
-   FINALIZAR PARTIDA
-   ========================================================== */
 function finishGame() {
   stopTimer();
   $("finalMoves").textContent = String(moves);
   $("finalTime").textContent = formatTime(elapsedSeconds);
   $("gameInstruction").textContent = "Parabéns! Todos os pares foram encontrados.";
   $("completionPanel").hidden = false;
-  window.setTimeout(openResultModal, 500);
+  setTimeout(openResultModal, 500);
 }
 
 /* ==========================================================
-   MODAL
-   ========================================================== */
+MODAL
+========================================================== */
 function openResultModal() {
   resultModal.hidden = false;
   resultModal.setAttribute("aria-hidden", "false");
   document.body.classList.add("page-locked");
-  window.setTimeout(() => {
-    $("modalMeaningButton").focus();
-  }, 60);
+  setTimeout(() => $("modalMeaningButton").focus(), 60);
 }
 
 function closeResultModal() {
@@ -497,61 +334,64 @@ function closeResultModal() {
 }
 
 /* ==========================================================
-   CRIAR TELA DE SIGNIFICADOS
-   ========================================================== */
+TELA DE SIGNIFICADOS
+========================================================== */
 function renderMeaningScreen() {
   if (meaningRendered) return;
   meaningRendered = true;
-  const meaningGrid = $("meaningGrid");
-  meaningGrid.innerHTML = "";
+  const grid = $("meaningGrid");
+  grid.innerHTML = "";
   const fragment = document.createDocumentFragment();
 
-  MEANINGS.forEach((meaning, index) => {
+  MEANINGS.forEach((m, i) => {
     const article = document.createElement("article");
     article.className = "meaning-card";
 
     const imagesContainer = document.createElement("div");
     imagesContainer.className = "meaning-images";
 
-    const symbolFigure = createMeaningFigure(meaning.symbolId, `Símbolo ${meaning.name}`, "SÍMBOLO", true);
-    const illustrationFigure = createMeaningFigure(meaning.illustrationId, `Representação de ${meaning.translation}`, "REPRESENTAÇÃO", false);
+    const symbolFig = createMeaningFigure(IMAGE_URLS[m.symbolId], `Símbolo ${m.name}`, "SÍMBOLO", true);
+    const illustrationFig = createMeaningFigure(IMAGE_URLS[m.illustrationId], `Representação de ${m.translation}`, "REPRESENTAÇÃO", false);
 
-    imagesContainer.append(symbolFigure, illustrationFigure);
+    imagesContainer.append(symbolFig, illustrationFig);
 
-    const meaningBody = document.createElement("div");
-    meaningBody.className = "meaning-body";
+    const body = document.createElement("div");
+    body.className = "meaning-body";
 
-    const meaningNumber = document.createElement("p");
-    meaningNumber.className = "meaning-number";
-    meaningNumber.textContent = `ADINKRA ${String(index + 1).padStart(2, "0")}`;
+    const number = document.createElement("p");
+    number.className = "meaning-number";
+    number.textContent = `ADINKRA ${String(i + 1).padStart(2, "0")}`;
 
-    const meaningTitle = document.createElement("h3");
-    meaningTitle.textContent = meaning.name;
+    const title = document.createElement("h3");
+    title.textContent = m.name;
 
-    const meaningTranslation = document.createElement("p");
-    meaningTranslation.className = "meaning-translation";
-    meaningTranslation.textContent = `“${meaning.translation}”`;
+    const translation = document.createElement("p");
+    translation.className = "meaning-translation";
+    translation.textContent = `“${m.translation}”`;
 
-    const meaningDescription = document.createElement("p");
-    meaningDescription.className = "meaning-description";
-    meaningDescription.textContent = meaning.description;
+    const description = document.createElement("p");
+    description.className = "meaning-description";
+    description.textContent = m.description;
 
-    meaningBody.append(meaningNumber, meaningTitle, meaningTranslation, meaningDescription);
-    article.append(imagesContainer, meaningBody);
+    body.append(number, title, translation, description);
+    article.append(imagesContainer, body);
     fragment.appendChild(article);
   });
 
-  meaningGrid.appendChild(fragment);
+  grid.appendChild(fragment);
 }
 
-function createMeaningFigure(imageId, altText, labelText, isSymbol) {
+function createMeaningFigure(src, alt, label, isSymbol) {
   const figure = document.createElement("figure");
   figure.className = isSymbol ? "meaning-image-box symbol" : "meaning-image-box";
-  const image = cloneCachedImage(imageId, altText);
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = alt;
+  img.loading = "lazy";
   const caption = document.createElement("figcaption");
   caption.className = "meaning-image-label";
-  caption.textContent = labelText;
-  figure.append(image, caption);
+  caption.textContent = label;
+  figure.append(img, caption);
   return figure;
 }
 
@@ -564,14 +404,20 @@ function openMeaningScreen() {
 
 function backToCompletedGame() {
   showOnlyScreen(gameScreen);
-  window.setTimeout(() => {
-    $("completionPanel").scrollIntoView({ behavior: "smooth", block: "center" });
-  }, 100);
+  setTimeout(() => $("completionPanel").scrollIntoView({ behavior: "smooth", block: "center" }), 100);
+}
+
+function returnToInitialScreen() {
+  stopTimer();
+  closeResultModal();
+  showOnlyScreen(initialScreen);
+  window.scrollTo({ top: 0, behavior: "auto" });
+  setTimeout(() => $("startButton").focus(), 300);
 }
 
 /* ==========================================================
-   EVENTOS
-   ========================================================== */
+EVENTOS
+========================================================== */
 $("startButton").addEventListener("click", openGameScreen);
 $("restartButton").addEventListener("click", restartGame);
 $("homeButton").addEventListener("click", returnToInitialScreen);
@@ -584,13 +430,13 @@ $("meaningHomeButton").addEventListener("click", returnToInitialScreen);
 $("meaningPlayAgainButton").addEventListener("click", restartGame);
 $("modalOverlay").addEventListener("click", closeResultModal);
 
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !resultModal.hidden) {
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !resultModal.hidden) {
     closeResultModal();
   }
 });
 
 /* ==========================================================
-   INICIALIZAÇÃO
-   ========================================================== */
-preloadAllResources();
+INICIALIZAÇÃO
+========================================================== */
+showOnlyScreen(initialScreen);
