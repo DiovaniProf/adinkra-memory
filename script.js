@@ -2,351 +2,226 @@
 
 
 /* ==========================================================
-   CONFIGURAÇÕES
+   CONFIGURAÇÕES GERAIS
 ========================================================== */
+
+const IMAGE_FOLDER = "IMAGENS";
 
 const TOTAL_PAIRS = 10;
 
-const CARD_BACK_ID = "cardBack";
-
-const CARD_BACK_PATH =
-    "imagens/capa.png";
+const CARD_BACK_ID = "CARTA";
 
 const MAX_SIMULTANEOUS_LOADS = 5;
 
 
-/* ==========================================================
-   CORES DAS CARTAS PROVISÓRIAS
-========================================================== */
+/*
+    O código tenta localizar automaticamente
+    cada imagem nestes formatos.
+*/
 
-const PALETTES = [
-    ["#471608", "#a74317", "#f0a536"],
-    ["#17213f", "#305da8", "#6bbcf3"],
-    ["#371047", "#87399b", "#dc82e9"],
-    ["#12382b", "#278663", "#7addae"],
-    ["#4b161e", "#a52d45", "#f48192"],
-    ["#393006", "#a58a16", "#f4d757"],
-    ["#122f40", "#197c91", "#70d9e6"],
-    ["#38210f", "#a05a21", "#efb36a"],
-    ["#251847", "#6844a6", "#ad8bf1"],
-    ["#18360f", "#4c992e", "#9de26d"]
+const IMAGE_EXTENSIONS = [
+    "png",
+    "webp",
+    "jpg",
+    "jpeg",
+    "PNG",
+    "WEBP",
+    "JPG",
+    "JPEG"
 ];
 
 
 /* ==========================================================
-   PRODUÇÃO DAS CARTAS PROVISÓRIAS
+   FUNÇÕES AUXILIARES PARA OS ENDEREÇOS
 ========================================================== */
 
-function placeholderImage(
-    letter,
-    type,
-    index
-) {
-    const [
-        dark,
-        medium,
-        light
-    ] = PALETTES[
-        index % PALETTES.length
+function createImageCandidates(fileName) {
+    return IMAGE_EXTENSIONS.map(
+        (extension) =>
+            `${IMAGE_FOLDER}/${fileName}.${extension}`
+    );
+}
+
+
+function createCardBackCandidates() {
+    const names = [
+        "CARTA",
+        "carta",
+        "Carta"
     ];
 
 
-    const label =
-        type === "symbol"
-            ? "SÍMBOLO"
-            : "IMAGEM";
-
-
-    const svg = `
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="960"
-            height="540"
-            viewBox="0 0 960 540"
-        >
-            <defs>
-                <linearGradient
-                    id="gradient"
-                    x1="0"
-                    y1="0"
-                    x2="1"
-                    y2="1"
-                >
-                    <stop
-                        offset="0"
-                        stop-color="${dark}"
-                    />
-
-                    <stop
-                        offset="0.55"
-                        stop-color="${medium}"
-                    />
-
-                    <stop
-                        offset="1"
-                        stop-color="${light}"
-                    />
-                </linearGradient>
-            </defs>
-
-            <rect
-                width="960"
-                height="540"
-                rx="38"
-                fill="url(#gradient)"
-            />
-
-            <rect
-                x="20"
-                y="20"
-                width="920"
-                height="500"
-                rx="29"
-                fill="none"
-                stroke="#ffe7a0"
-                stroke-width="5"
-                opacity="0.75"
-            />
-
-            <circle
-                cx="480"
-                cy="245"
-                r="150"
-                fill="#120805"
-                opacity="0.35"
-                stroke="#ffe7a0"
-                stroke-width="7"
-            />
-
-            <text
-                x="480"
-                y="315"
-                text-anchor="middle"
-                font-family="Arial"
-                font-size="210"
-                font-weight="900"
-                fill="#fff7dd"
-            >
-                ${letter}
-            </text>
-
-            <rect
-                x="330"
-                y="427"
-                width="300"
-                height="58"
-                rx="29"
-                fill="#130906"
-                opacity="0.6"
-            />
-
-            <text
-                x="480"
-                y="466"
-                text-anchor="middle"
-                font-family="Arial"
-                font-size="26"
-                font-weight="800"
-                letter-spacing="7"
-                fill="#fff4cc"
-            >
-                ${label}
-            </text>
-        </svg>
-    `;
-
-
-    return (
-        "data:image/svg+xml;charset=UTF-8," +
-        encodeURIComponent(svg)
+    return names.flatMap(
+        (name) =>
+            createImageCandidates(name)
     );
 }
 
 
 /* ==========================================================
-   CAPA PROVISÓRIA DE SEGURANÇA
+   BANCO DAS 20 CARTAS
 ========================================================== */
 
-function fallbackBackImage() {
-    const svg = `
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="960"
-            height="540"
-        >
-            <defs>
-                <linearGradient
-                    id="gradient"
-                    x1="0"
-                    y1="0"
-                    x2="1"
-                    y2="1"
-                >
-                    <stop
-                        stop-color="#241006"
-                    />
+const CARD_INFORMATION = [
+    {
+        id: "img01",
+        pair: 1,
+        type: "symbol",
+        alt: "Símbolo Sankofa"
+    },
+    {
+        id: "img02",
+        pair: 1,
+        type: "illustration",
+        alt: "Representação visual de Sankofa"
+    },
 
-                    <stop
-                        offset="1"
-                        stop-color="#d27a22"
-                    />
-                </linearGradient>
-            </defs>
+    {
+        id: "img03",
+        pair: 2,
+        type: "symbol",
+        alt: "Símbolo Duafe"
+    },
+    {
+        id: "img04",
+        pair: 2,
+        type: "illustration",
+        alt: "Pente de madeira"
+    },
 
-            <rect
-                width="960"
-                height="540"
-                rx="36"
-                fill="url(#gradient)"
-            />
+    {
+        id: "img05",
+        pair: 3,
+        type: "symbol",
+        alt: "Símbolo Fafanto"
+    },
+    {
+        id: "img06",
+        pair: 3,
+        type: "illustration",
+        alt: "Borboleta"
+    },
 
-            <rect
-                x="22"
-                y="22"
-                width="916"
-                height="496"
-                rx="28"
-                fill="none"
-                stroke="#f5c65f"
-                stroke-width="7"
-            />
+    {
+        id: "img07",
+        pair: 4,
+        type: "symbol",
+        alt: "Símbolo Ohene Kyiniie"
+    },
+    {
+        id: "img08",
+        pair: 4,
+        type: "illustration",
+        alt: "Guarda-chuva do rei"
+    },
 
-            <circle
-                cx="480"
-                cy="270"
-                r="145"
-                fill="#1a0b05"
-                opacity="0.58"
-                stroke="#ffe8a6"
-                stroke-width="8"
-            />
+    {
+        id: "img09",
+        pair: 5,
+        type: "symbol",
+        alt: "Símbolo Nkonsonkonson"
+    },
+    {
+        id: "img10",
+        pair: 5,
+        type: "illustration",
+        alt: "Elos de corrente"
+    },
 
-            <text
-                x="480"
-                y="250"
-                text-anchor="middle"
-                font-family="Arial"
-                font-size="60"
-                font-weight="900"
-                fill="#f5c65f"
-            >
-                ADINKRA
-            </text>
+    {
+        id: "img11",
+        pair: 6,
+        type: "symbol",
+        alt: "Símbolo Ananse Ntontan"
+    },
+    {
+        id: "img12",
+        pair: 6,
+        type: "illustration",
+        alt: "Teia de aranha"
+    },
 
-            <text
-                x="480"
-                y="340"
-                text-anchor="middle"
-                font-family="Arial"
-                font-size="80"
-                fill="#ffe8a6"
-            >
-                ◈
-            </text>
-        </svg>
-    `;
+    {
+        id: "img13",
+        pair: 7,
+        type: "symbol",
+        alt: "Símbolo Abe Dua"
+    },
+    {
+        id: "img14",
+        pair: 7,
+        type: "illustration",
+        alt: "Palmeira"
+    },
+
+    {
+        id: "img15",
+        pair: 8,
+        type: "symbol",
+        alt: "Símbolo Kete Pa"
+    },
+    {
+        id: "img16",
+        pair: 8,
+        type: "illustration",
+        alt: "Boa cama"
+    },
+
+    {
+        id: "img17",
+        pair: 9,
+        type: "symbol",
+        alt: "Símbolo Dwennimmen"
+    },
+    {
+        id: "img18",
+        pair: 9,
+        type: "illustration",
+        alt: "Carneiro com grandes chifres"
+    },
+
+    {
+        id: "img19",
+        pair: 10,
+        type: "symbol",
+        alt: "Símbolo Denkyem"
+    },
+    {
+        id: "img20",
+        pair: 10,
+        type: "illustration",
+        alt: "Crocodilo"
+    }
+];
 
 
-    return (
-        "data:image/svg+xml;charset=UTF-8," +
-        encodeURIComponent(svg)
-    );
-}
+const CARDS = CARD_INFORMATION.map(
+    (card) => ({
+        ...card,
+
+        candidates:
+            createImageCandidates(card.id)
+    })
+);
 
 
 /* ==========================================================
-   DEFINIÇÃO DAS 20 CARTAS
-========================================================== */
-
-const CARD_DEFINITIONS =
-    Array.from(
-        { length: 10 },
-
-        (_, pairIndex) => {
-            const letter =
-                String.fromCharCode(
-                    65 + pairIndex
-                );
-
-
-            const pair =
-                pairIndex + 1;
-
-
-            return [
-                {
-                    id:
-                        `img${String(
-                            pairIndex * 2 + 1
-                        ).padStart(2, "0")}`,
-
-                    pair,
-                    letter,
-
-                    type: "symbol"
-                },
-
-                {
-                    id:
-                        `img${String(
-                            pairIndex * 2 + 2
-                        ).padStart(2, "0")}`,
-
-                    pair,
-                    letter,
-
-                    type: "illustration"
-                }
-            ];
-        }
-    ).flat();
-
-
-const CARDS =
-    CARD_DEFINITIONS.map(
-        (card) => ({
-            ...card,
-
-            src:
-                placeholderImage(
-                    card.letter,
-                    card.type,
-                    card.pair - 1
-                ),
-
-            alt:
-                `Carta provisória ${card.letter}, ` +
-                (
-                    card.type === "symbol"
-                        ? "símbolo"
-                        : "imagem"
-                )
-        })
-    );
-
-
-/* ==========================================================
-   RECURSOS DA TELA INICIAL
+   RECURSOS QUE SERÃO CARREGADOS
 ========================================================== */
 
 const RESOURCES = [
     ...CARDS.map(
         (card) => ({
             id: card.id,
-            src: card.src,
             alt: card.alt,
-            letter: card.letter
+            candidates: card.candidates
         })
     ),
 
     {
         id: CARD_BACK_ID,
-
-        src:
-            CARD_BACK_PATH,
-
-        alt:
-            "Arte do verso das cartas"
+        alt: "Arte do verso das cartas",
+        candidates: createCardBackCandidates()
     }
 ];
 
@@ -358,19 +233,13 @@ const RESOURCES = [
 const MEANINGS = [
     {
         pair: 1,
-        letter: "A",
+        symbolId: "img01",
+        illustrationId: "img02",
 
-        name:
-            "Sankofa",
+        name: "Sankofa",
 
         translation:
             "Volte e busque",
-
-        symbol:
-            "https://i.postimg.cc/2bqyhWvZ/img01.jpg",
-
-        illustration:
-            "https://i.postimg.cc/hJZhXsJn/img02.png",
 
         description:
             "Símbolo da importância de aprender com o passado. " +
@@ -379,175 +248,29 @@ const MEANINGS = [
     },
 
     {
-        pair: 10,
-        letter: "J",
-
-        name:
-            "Denkyem",
-
-        translation:
-            "Crocodilo",
-
-        symbol:
-            "https://i.postimg.cc/MMcHVBRf/img19.jpg",
-
-        illustration:
-            "https://i.postimg.cc/94gzDb4z/img20.png",
-
-        description:
-            "Símbolo de adaptabilidade. O crocodilo vive na água, " +
-            "mas respira ar, demonstrando a capacidade de ajustar-se " +
-            "às circunstâncias."
-    },
-
-    {
-        pair: 9,
-        letter: "I",
-
-        name:
-            "Dwennimmen",
-
-        translation:
-            "Chifres de carneiro",
-
-        symbol:
-            "https://i.postimg.cc/R63hKtfn/img17.jpg",
-
-        illustration:
-            "https://i.postimg.cc/4K2nYPKT/img18.png",
-
-        description:
-            "Símbolo de humildade unida à força. O carneiro luta " +
-            "ferozmente contra um adversário, mas também se submete " +
-            "humildemente ao abate, enfatizando que até os fortes " +
-            "precisam ser humildes."
-    },
-
-    {
-        pair: 5,
-        letter: "E",
-
-        name:
-            "Nkonsonkonson",
-
-        translation:
-            "Elo de corrente",
-
-        symbol:
-            "https://i.postimg.cc/k6VGKS8V/img09.jpg",
-
-        illustration:
-            "https://i.postimg.cc/hJZhXsJg/img10.png",
-
-        description:
-            "Símbolo de unidade e relações humanas. Lembra a necessidade " +
-            "de contribuir para a comunidade e que, na união, há força. " +
-            "Representa o chamado à ação, a coragem, a determinação e a " +
-            "prontidão para enfrentar desafios."
-    },
-
-    {
         pair: 2,
-        letter: "B",
+        symbolId: "img03",
+        illustrationId: "img04",
 
-        name:
-            "Duafe",
+        name: "Duafe",
 
         translation:
             "Pente de madeira",
 
-        symbol:
-            "https://i.postimg.cc/47KyVcty/img03.jpg",
-
-        illustration:
-            "https://i.postimg.cc/d7NDh67Y/img04.png",
-
         description:
-            "Símbolo de beleza e limpeza; também de qualidades femininas " +
+            "Símbolo de beleza e limpeza; também representa qualidades " +
             "como bondade, amor e cuidado."
     },
 
     {
-        pair: 8,
-        letter: "H",
-
-        name:
-            "Kete Pa",
-
-        translation:
-            "Boa cama",
-
-        symbol:
-            "https://i.postimg.cc/PLVNCyLm/img15.jpg",
-
-        illustration:
-            "https://i.postimg.cc/nsSMX2sc/img16.png",
-
-        description:
-            "Símbolo de um bom casamento e de um bom descanso."
-    },
-
-    {
-        pair: 6,
-        letter: "F",
-
-        name:
-            "Ananse Ntontan",
-
-        translation:
-            "Teia de aranha",
-
-        symbol:
-            "https://i.postimg.cc/06Xrzn67/img11.jpg",
-
-        illustration:
-            "https://i.postimg.cc/KKp41fKR/img12.png",
-
-        description:
-            "Símbolo de sabedoria, criatividade, inteligência, " +
-            "engenhosidade e poder criativo. Inspirado na Aranha, " +
-            "figura lendária do folclore africano, enfatiza pensamento " +
-            "estratégico, inovação e capacidade de adaptar-se e superar desafios."
-    },
-
-    {
-        pair: 7,
-        letter: "G",
-
-        name:
-            "Abe Dua",
-
-        translation:
-            "Palmeira",
-
-        symbol:
-            "https://i.postimg.cc/mcphPjcM/img13.jpg",
-
-        illustration:
-            "https://i.postimg.cc/WDYtd8Dz/img14.png",
-
-        description:
-            "Símbolo de riqueza e engenhosidade. Representa resistência, " +
-            "prosperidade e capacidade de prover para si e para os outros. " +
-            "Assim como toda parte da palmeira é útil, ensina recurso, " +
-            "força e sustentabilidade para superar desafios."
-    },
-
-    {
         pair: 3,
-        letter: "C",
+        symbolId: "img05",
+        illustrationId: "img06",
 
-        name:
-            "Fafanto",
+        name: "Fafanto",
 
         translation:
             "Borboleta",
-
-        symbol:
-            "https://i.postimg.cc/f3qkVC30/img05.jpg",
-
-        illustration:
-            "https://i.postimg.cc/QBYVFmBF/img06.png",
 
         description:
             "Símbolo de transformação e mudança. Representa beleza, " +
@@ -558,22 +281,116 @@ const MEANINGS = [
 
     {
         pair: 4,
-        letter: "D",
+        symbolId: "img07",
+        illustrationId: "img08",
 
-        name:
-            "Ohene Kyiniie",
+        name: "Ohene Kyiniie",
 
         translation:
             "Guarda-chuva do rei",
 
-        symbol:
-            "https://i.postimg.cc/67bT8c7v/img07.jpg",
+        description:
+            "Símbolo de liderança, proteção, autoridade e responsabilidade. " +
+            "Recorda que a verdadeira liderança também deve oferecer cuidado " +
+            "e segurança à comunidade."
+    },
 
-        illustration:
-            "https://i.postimg.cc/gwtrxsw8/img08.png",
+    {
+        pair: 5,
+        symbolId: "img09",
+        illustrationId: "img10",
+
+        name: "Nkonsonkonson",
+
+        translation:
+            "Elo de corrente",
 
         description:
-            "Símbolo de liderança e proteção."
+            "Símbolo de unidade e relações humanas. Lembra a necessidade " +
+            "de contribuir para a comunidade e que, na união, há força. " +
+            "Representa o chamado à ação, a coragem, a determinação e a " +
+            "prontidão para enfrentar desafios."
+    },
+
+    {
+        pair: 6,
+        symbolId: "img11",
+        illustrationId: "img12",
+
+        name: "Ananse Ntontan",
+
+        translation:
+            "Teia de aranha",
+
+        description:
+            "Símbolo de sabedoria, criatividade, inteligência, engenhosidade " +
+            "e poder criativo. Inspirado na aranha, figura lendária do " +
+            "folclore africano, enfatiza pensamento estratégico, inovação " +
+            "e capacidade de adaptar-se e superar desafios."
+    },
+
+    {
+        pair: 7,
+        symbolId: "img13",
+        illustrationId: "img14",
+
+        name: "Abe Dua",
+
+        translation:
+            "Palmeira",
+
+        description:
+            "Símbolo de riqueza e engenhosidade. Representa resistência, " +
+            "prosperidade e capacidade de prover para si e para os outros. " +
+            "Assim como toda parte da palmeira é útil, ensina recurso, força " +
+            "e sustentabilidade para superar desafios."
+    },
+
+    {
+        pair: 8,
+        symbolId: "img15",
+        illustrationId: "img16",
+
+        name: "Kete Pa",
+
+        translation:
+            "Boa cama",
+
+        description:
+            "Símbolo de um bom casamento, de harmonia, acolhimento " +
+            "e de um bom descanso."
+    },
+
+    {
+        pair: 9,
+        symbolId: "img17",
+        illustrationId: "img18",
+
+        name: "Dwennimmen",
+
+        translation:
+            "Chifres de carneiro",
+
+        description:
+            "Símbolo de humildade unida à força. O carneiro luta ferozmente " +
+            "contra um adversário, mas também demonstra submissão e respeito, " +
+            "enfatizando que até os fortes precisam ser humildes."
+    },
+
+    {
+        pair: 10,
+        symbolId: "img19",
+        illustrationId: "img20",
+
+        name: "Denkyem",
+
+        translation:
+            "Crocodilo",
+
+        description:
+            "Símbolo de adaptabilidade. O crocodilo vive na água, " +
+            "mas respira ar, demonstrando a capacidade de ajustar-se " +
+            "às circunstâncias."
     }
 ];
 
@@ -582,9 +399,8 @@ const MEANINGS = [
    ELEMENTOS
 ========================================================== */
 
-const $ =
-    (id) =>
-        document.getElementById(id);
+const $ = (id) =>
+    document.getElementById(id);
 
 
 const initialScreen =
@@ -611,79 +427,226 @@ const previewCards = [
 ];
 
 
+/* ==========================================================
+   CACHE DAS IMAGENS
+========================================================== */
+
 const imageCache =
     new Map();
 
 
-/* ==========================================================
-   ESTADO
-========================================================== */
-
-let resourcesReady = false;
-let loadingInProgress = false;
-
-let firstCard = null;
-let secondCard = null;
-
-let boardLocked = false;
-
-let moves = 0;
-let matchedPairs = 0;
-
-let elapsedSeconds = 0;
-
-let timerInterval = null;
-let timerStarted = false;
-
-let meaningRendered = false;
+const resolvedSourceCache =
+    new Map();
 
 
 /* ==========================================================
-   CARREGAR UMA IMAGEM
+   ESTADO DO JOGO
 ========================================================== */
 
-function loadImage(resource) {
+let resourcesReady =
+    false;
+
+
+let loadingInProgress =
+    false;
+
+
+let fallbackCount =
+    0;
+
+
+let firstCard =
+    null;
+
+
+let secondCard =
+    null;
+
+
+let boardLocked =
+    false;
+
+
+let moves =
+    0;
+
+
+let matchedPairs =
+    0;
+
+
+let elapsedSeconds =
+    0;
+
+
+let timerInterval =
+    null;
+
+
+let timerStarted =
+    false;
+
+
+let meaningRendered =
+    false;
+
+
+/* ==========================================================
+   CRIAR IMAGEM PROVISÓRIA EM CASO DE FALHA
+========================================================== */
+
+function createFallbackImage(
+    text,
+    type = "illustration"
+) {
+    const isBack =
+        type === "back";
+
+
+    const label =
+        isBack
+            ? "ADINKRA"
+            : text.toUpperCase();
+
+
+    const mainText =
+        isBack
+            ? "◈"
+            : text
+                .replace("img", "")
+                .toUpperCase();
+
+
+    const svg = `
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="960"
+            height="540"
+            viewBox="0 0 960 540"
+        >
+            <defs>
+                <linearGradient
+                    id="gradient"
+                    x1="0"
+                    y1="0"
+                    x2="1"
+                    y2="1"
+                >
+                    <stop
+                        offset="0%"
+                        stop-color="#241006"
+                    />
+
+                    <stop
+                        offset="52%"
+                        stop-color="#713111"
+                    />
+
+                    <stop
+                        offset="100%"
+                        stop-color="#d78329"
+                    />
+                </linearGradient>
+            </defs>
+
+            <rect
+                width="960"
+                height="540"
+                rx="38"
+                fill="url(#gradient)"
+            />
+
+            <rect
+                x="22"
+                y="22"
+                width="916"
+                height="496"
+                rx="28"
+                fill="none"
+                stroke="#f5c65f"
+                stroke-width="7"
+            />
+
+            <circle
+                cx="480"
+                cy="255"
+                r="150"
+                fill="#160a05"
+                fill-opacity="0.55"
+                stroke="#ffe8a6"
+                stroke-width="8"
+            />
+
+            <text
+                x="480"
+                y="${isBack ? 315 : 305}"
+                text-anchor="middle"
+                font-family="Arial, Helvetica, sans-serif"
+                font-size="${isBack ? 130 : 150}"
+                font-weight="900"
+                fill="#fff4cc"
+            >
+                ${mainText}
+            </text>
+
+            <rect
+                x="325"
+                y="430"
+                width="310"
+                height="58"
+                rx="29"
+                fill="#140906"
+                fill-opacity="0.58"
+            />
+
+            <text
+                x="480"
+                y="468"
+                text-anchor="middle"
+                font-family="Arial, Helvetica, sans-serif"
+                font-size="25"
+                font-weight="800"
+                letter-spacing="5"
+                fill="#fff4cc"
+            >
+                ${label}
+            </text>
+        </svg>
+    `;
+
+
+    return (
+        "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(svg)
+    );
+}
+
+
+/* ==========================================================
+   TENTAR CARREGAR UMA LISTA DE ENDEREÇOS
+========================================================== */
+
+function loadImageFromCandidates(resource) {
     return new Promise(
         (resolve) => {
-            const image =
-                new Image();
+            let candidateIndex =
+                0;
 
 
-            image.alt =
-                resource.alt;
+            function tryNextCandidate() {
+                if (
+                    candidateIndex >=
+                    resource.candidates.length
+                ) {
+                    fallbackCount += 1;
 
 
-            image.decoding =
-                "async";
-
-
-            image.onload =
-                async () => {
-                    try {
-                        await image.decode?.();
-
-                    } catch (error) {
-                        /*
-                            O evento load já confirma
-                            que a imagem pode ser usada.
-                        */
-                    }
-
-
-                    imageCache.set(
-                        resource.id,
-                        image
-                    );
-
-
-                    resolve();
-                };
-
-
-            image.onerror =
-                () => {
                     const fallback =
                         new Image();
+
+
+                    fallback.alt =
+                        resource.alt;
 
 
                     fallback.onload =
@@ -694,30 +657,106 @@ function loadImage(resource) {
                             );
 
 
-                            resolve();
+                            resolvedSourceCache.set(
+                                resource.id,
+                                fallback.src
+                            );
+
+
+                            resolve({
+                                resource,
+                                usedFallback: true
+                            });
                         };
 
 
                     fallback.src =
-                        resource.id === CARD_BACK_ID
-                            ? fallbackBackImage()
-                            : placeholderImage(
-                                resource.letter || "?",
-                                "illustration",
-                                0
-                            );
-                };
+                        createFallbackImage(
+                            resource.id,
+                            resource.id === CARD_BACK_ID
+                                ? "back"
+                                : "illustration"
+                        );
 
 
-            image.src =
-                resource.src;
+                    return;
+                }
+
+
+                const candidate =
+                    resource.candidates[
+                        candidateIndex
+                    ];
+
+
+                candidateIndex += 1;
+
+
+                const image =
+                    new Image();
+
+
+                image.alt =
+                    resource.alt;
+
+
+                image.decoding =
+                    "async";
+
+
+                image.loading =
+                    "eager";
+
+
+                image.onload =
+                    async () => {
+                        try {
+                            await image.decode?.();
+
+                        } catch (error) {
+                            /*
+                                O evento load já confirma
+                                que a imagem pode ser usada.
+                            */
+                        }
+
+
+                        imageCache.set(
+                            resource.id,
+                            image
+                        );
+
+
+                        resolvedSourceCache.set(
+                            resource.id,
+                            candidate
+                        );
+
+
+                        resolve({
+                            resource,
+                            usedFallback: false
+                        });
+                    };
+
+
+                image.onerror =
+                    tryNextCandidate;
+
+
+                image.src =
+                    candidate;
+            }
+
+
+            tryNextCandidate();
         }
     );
 }
 
 
 /* ==========================================================
-   PREPARAR OS RECURSOS DO JOGO
+   PREPARAR TODAS AS IMAGENS
 ========================================================== */
 
 async function preloadAllResources() {
@@ -726,10 +765,22 @@ async function preloadAllResources() {
     }
 
 
-    loadingInProgress = true;
+    loadingInProgress =
+        true;
+
+
+    resourcesReady =
+        false;
+
+
+    fallbackCount =
+        0;
 
 
     imageCache.clear();
+
+
+    resolvedSourceCache.clear();
 
 
     $("startButton").hidden =
@@ -740,49 +791,77 @@ async function preloadAllResources() {
         true;
 
 
-    let next = 0;
-    let done = 0;
+    let nextResourceIndex =
+        0;
 
 
-    updateLoading(0);
+    let completedResources =
+        0;
+
+
+    updateLoadingProgress(0);
 
 
     async function worker() {
-        while (
-            next < RESOURCES.length
-        ) {
+        while (true) {
+            const currentIndex =
+                nextResourceIndex;
+
+
+            nextResourceIndex += 1;
+
+
+            if (
+                currentIndex >=
+                RESOURCES.length
+            ) {
+                return;
+            }
+
+
             const resource =
-                RESOURCES[next++];
+                RESOURCES[
+                    currentIndex
+                ];
 
 
             $("loadingText").textContent =
                 resource.id === CARD_BACK_ID
-                    ? "Preparando a capa das cartas..."
-                    : `Preparando ${resource.id}...`;
+                    ? "Localizando a imagem CARTA..."
+                    : `Localizando ${resource.id}...`;
 
 
-            await loadImage(resource);
+            await loadImageFromCandidates(
+                resource
+            );
 
 
-            done += 1;
+            completedResources += 1;
 
 
-            updateLoading(done);
+            updateLoadingProgress(
+                completedResources
+            );
         }
     }
 
 
-    await Promise.all(
+    const workers =
         Array.from(
             {
-                length: Math.min(
-                    MAX_SIMULTANEOUS_LOADS,
-                    RESOURCES.length
-                )
+                length:
+                    Math.min(
+                        MAX_SIMULTANEOUS_LOADS,
+                        RESOURCES.length
+                    )
             },
 
-            worker
-        )
+            () => worker()
+        );
+
+
+    await Promise.all(
+        workers
     );
 
 
@@ -794,8 +873,99 @@ async function preloadAllResources() {
         true;
 
 
-    $("loadingText").textContent =
-        "As cartas provisórias estão prontas para a partida.";
+    finishLoading();
+}
+
+
+/* ==========================================================
+   ATUALIZAR BARRA DE CARREGAMENTO
+========================================================== */
+
+function updateLoadingProgress(
+    completedResources
+) {
+    const percentage =
+        Math.round(
+            (
+                completedResources /
+                RESOURCES.length
+            ) * 100
+        );
+
+
+    $("loadingPercentage").textContent =
+        `${percentage}%`;
+
+
+    $("loadingCounter").textContent =
+        `${completedResources} de ` +
+        `${RESOURCES.length} recursos preparados`;
+
+
+    $("loadingBar").style.width =
+        `${percentage}%`;
+
+
+    $("loadingTrack").setAttribute(
+        "aria-valuenow",
+        String(completedResources)
+    );
+}
+
+
+/* ==========================================================
+   FINALIZAR CARREGAMENTO
+========================================================== */
+
+function finishLoading() {
+    $("loadingPercentage").textContent =
+        "100%";
+
+
+    $("loadingBar").style.width =
+        "100%";
+
+
+    $("loadingCounter").textContent =
+        `${RESOURCES.length} de ` +
+        `${RESOURCES.length} recursos preparados`;
+
+
+    if (fallbackCount === 0) {
+        $("loadingText").textContent =
+            "Todas as imagens locais estão carregadas e prontas.";
+
+        $("localModeInformation").innerHTML = `
+            <span aria-hidden="true">✓</span>
+
+            <p>
+                As 20 imagens e a imagem
+                <strong>CARTA</strong>
+                foram encontradas na pasta
+                <strong>IMAGENS</strong>.
+            </p>
+        `;
+
+    } else {
+        $("loadingText").textContent =
+            "O jogo está pronto, mas alguns arquivos não foram encontrados.";
+
+        $("localModeInformation").innerHTML = `
+            <span aria-hidden="true">!</span>
+
+            <p>
+                ${fallbackCount}
+                recurso(s) receberam uma representação provisória.
+                Confira os nomes dos arquivos na pasta
+                <strong>IMAGENS</strong>.
+            </p>
+        `;
+    }
+
+
+    refreshInitialPreview(
+        false
+    );
 
 
     $("startButton").hidden =
@@ -806,48 +976,21 @@ async function preloadAllResources() {
         false;
 
 
-    refreshInitialPreview(false);
-
-
     registerServiceWorker();
-}
 
 
-/* ==========================================================
-   ATUALIZAR CARREGAMENTO
-========================================================== */
+    window.setTimeout(
+        () => {
+            $("startButton").focus();
+        },
 
-function updateLoading(done) {
-    const percent =
-        Math.round(
-            (
-                done /
-                RESOURCES.length
-            ) * 100
-        );
-
-
-    $("loadingPercentage").textContent =
-        `${percent}%`;
-
-
-    $("loadingCounter").textContent =
-        `${done} de ${RESOURCES.length} recursos preparados`;
-
-
-    $("loadingBar").style.width =
-        `${percent}%`;
-
-
-    $("loadingTrack").setAttribute(
-        "aria-valuenow",
-        String(done)
+        100
     );
 }
 
 
 /* ==========================================================
-   EMBARALHAMENTO
+   EMBARALHAR
 ========================================================== */
 
 function shuffle(items) {
@@ -885,7 +1028,52 @@ function shuffle(items) {
 
 
 /* ==========================================================
-   ALTERAR AS TRÊS CARTAS DA ABERTURA
+   CLONAR IMAGEM JÁ CARREGADA
+========================================================== */
+
+function cloneCachedImage(
+    resourceId,
+    altText
+) {
+    const original =
+        imageCache.get(
+            resourceId
+        );
+
+
+    if (!original) {
+        throw new Error(
+            `Imagem ${resourceId} indisponível.`
+        );
+    }
+
+
+    const copy =
+        original.cloneNode(true);
+
+
+    copy.alt =
+        altText;
+
+
+    copy.draggable =
+        false;
+
+
+    copy.loading =
+        "eager";
+
+
+    copy.decoding =
+        "sync";
+
+
+    return copy;
+}
+
+
+/* ==========================================================
+   TROCAR AS TRÊS CARTAS DA TELA INICIAL
 ========================================================== */
 
 function refreshInitialPreview(
@@ -896,19 +1084,29 @@ function refreshInitialPreview(
     }
 
 
-    const choices =
+    /*
+        As imagens pares são as representações coloridas:
+        img02, img04, img06... img20.
+    */
+
+    const coloredCards =
+        CARDS.filter(
+            (card) =>
+                card.type ===
+                "illustration"
+        );
+
+
+    const selectedCards =
         shuffle(
-            CARDS.filter(
-                (card) =>
-                    card.type === "illustration"
-            )
+            coloredCards
         ).slice(0, 3);
 
 
     if (animate) {
         previewCards.forEach(
-            (card) => {
-                card.classList.add(
+            (previewCard) => {
+                previewCard.classList.add(
                     "preview-changing"
                 );
             }
@@ -918,28 +1116,36 @@ function refreshInitialPreview(
 
     window.setTimeout(
         () => {
-            choices.forEach(
-                (card, index) => {
-                    const cached =
+            selectedCards.forEach(
+                (
+                    selectedCard,
+                    index
+                ) => {
+                    const image =
                         imageCache.get(
-                            card.id
+                            selectedCard.id
                         );
 
 
+                    if (!image) {
+                        return;
+                    }
+
+
                     previewImages[index].src =
-                        cached.currentSrc ||
-                        cached.src;
+                        image.currentSrc ||
+                        image.src;
 
 
                     previewImages[index].alt =
-                        `Carta provisória ${card.letter}`;
+                        selectedCard.alt;
                 }
             );
 
 
             previewCards.forEach(
-                (card) => {
-                    card.classList.remove(
+                (previewCard) => {
+                    previewCard.classList.remove(
                         "preview-changing"
                     );
                 }
@@ -952,64 +1158,36 @@ function refreshInitialPreview(
 
 
 /* ==========================================================
-   CLONAR IMAGEM DA MEMÓRIA
-========================================================== */
-
-function cloneCachedImage(
-    id,
-    alt
-) {
-    const original =
-        imageCache.get(id);
-
-
-    if (!original) {
-        throw new Error(
-            `Imagem ${id} indisponível.`
-        );
-    }
-
-
-    const copy =
-        original.cloneNode(true);
-
-
-    copy.alt =
-        alt;
-
-
-    copy.draggable =
-        false;
-
-
-    return copy;
-}
-
-
-/* ==========================================================
-   EXIBIR SOMENTE UMA TELA
+   MOSTRAR APENAS UMA TELA
 ========================================================== */
 
 function showOnly(screen) {
-    [
+    const screens = [
         initialScreen,
         gameScreen,
         meaningScreen
-    ].forEach(
-        (item) => {
-            item.hidden =
-                item !== screen;
+    ];
 
 
-            item.setAttribute(
+    screens.forEach(
+        (currentScreen) => {
+            const isSelected =
+                currentScreen === screen;
+
+
+            currentScreen.hidden =
+                !isSelected;
+
+
+            currentScreen.setAttribute(
                 "aria-hidden",
-                item === screen
+                isSelected
                     ? "false"
                     : "true"
             );
 
 
-            item.classList.remove(
+            currentScreen.classList.remove(
                 "is-visible",
                 "is-leaving"
             );
@@ -1020,7 +1198,7 @@ function showOnly(screen) {
     if (
         screen !== initialScreen
     ) {
-        requestAnimationFrame(
+        window.requestAnimationFrame(
             () => {
                 screen.classList.add(
                     "is-visible"
@@ -1050,7 +1228,9 @@ function openGameScreen() {
     createBoard();
 
 
-    showOnly(gameScreen);
+    showOnly(
+        gameScreen
+    );
 
 
     document.body.classList.remove(
@@ -1062,6 +1242,19 @@ function openGameScreen() {
         top: 0,
         behavior: "auto"
     });
+
+
+    window.setTimeout(
+        () => {
+            $("memoryGrid")
+                .querySelector(
+                    ".memory-card"
+                )
+                ?.focus();
+        },
+
+        100
+    );
 }
 
 
@@ -1076,7 +1269,9 @@ function returnToInitialScreen() {
     closeResultModal();
 
 
-    showOnly(initialScreen);
+    showOnly(
+        initialScreen
+    );
 
 
     document.body.classList.add(
@@ -1085,15 +1280,23 @@ function returnToInitialScreen() {
 
 
     $("loadingText").textContent =
-        "As cartas provisórias continuam prontas na memória do navegador.";
+        "As imagens continuam prontas na memória do navegador.";
 
 
-    refreshInitialPreview(true);
+    refreshInitialPreview(
+        true
+    );
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "auto"
+    });
 }
 
 
 /* ==========================================================
-   CRIAR TABULEIRO
+   CRIAR O TABULEIRO
 ========================================================== */
 
 function createBoard() {
@@ -1109,8 +1312,17 @@ function createBoard() {
         document.createDocumentFragment();
 
 
-    shuffle(CARDS).forEach(
-        (cardData, index) => {
+    const shuffledCards =
+        shuffle(
+            CARDS
+        );
+
+
+    shuffledCards.forEach(
+        (
+            cardData,
+            index
+        ) => {
             const button =
                 document.createElement(
                     "button"
@@ -1122,7 +1334,7 @@ function createBoard() {
 
 
             button.className =
-                "memory-card provisional-card";
+                `memory-card ${cardData.type}-card`;
 
 
             button.dataset.id =
@@ -1130,11 +1342,9 @@ function createBoard() {
 
 
             button.dataset.pair =
-                String(cardData.pair);
-
-
-            button.dataset.letter =
-                cardData.letter;
+                String(
+                    cardData.pair
+                );
 
 
             button.setAttribute(
@@ -1153,6 +1363,10 @@ function createBoard() {
                 "memory-card-inner";
 
 
+            /*
+                VERSO — imagem CARTA.
+            */
+
             const back =
                 document.createElement(
                     "span"
@@ -1163,6 +1377,12 @@ function createBoard() {
                 "memory-card-face memory-card-back";
 
 
+            back.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+
             back.appendChild(
                 cloneCachedImage(
                     CARD_BACK_ID,
@@ -1170,6 +1390,10 @@ function createBoard() {
                 )
             );
 
+
+            /*
+                FRENTE — img01 até img20.
+            */
 
             const front =
                 document.createElement(
@@ -1204,7 +1428,9 @@ function createBoard() {
                 "click",
 
                 () => {
-                    flipCard(button);
+                    flipCard(
+                        button
+                    );
                 }
             );
 
@@ -1216,19 +1442,33 @@ function createBoard() {
     );
 
 
-    grid.appendChild(fragment);
+    grid.appendChild(
+        fragment
+    );
 }
 
 
 /* ==========================================================
-   VIRAR CARTA
+   VIRAR UMA CARTA
 ========================================================== */
 
 function flipCard(card) {
+    const isFlipped =
+        card.classList.contains(
+            "is-flipped"
+        );
+
+
+    const isMatched =
+        card.classList.contains(
+            "is-matched"
+        );
+
+
     if (
         boardLocked ||
-        card.classList.contains("is-flipped") ||
-        card.classList.contains("is-matched")
+        isFlipped ||
+        isMatched
     ) {
         return;
     }
@@ -1239,6 +1479,12 @@ function flipCard(card) {
 
     card.classList.add(
         "is-flipped"
+    );
+
+
+    card.setAttribute(
+        "aria-label",
+        `Carta aberta: ${card.dataset.id}`
     );
 
 
@@ -1265,10 +1511,21 @@ function flipCard(card) {
     updateStatus();
 
 
-    if (
+    checkSelectedPair();
+}
+
+
+/* ==========================================================
+   VERIFICAR O PAR
+========================================================== */
+
+function checkSelectedPair() {
+    const isMatch =
         firstCard.dataset.pair ===
-        secondCard.dataset.pair
-    ) {
+        secondCard.dataset.pair;
+
+
+    if (isMatch) {
         registerMatch();
 
     } else {
@@ -1278,16 +1535,12 @@ function flipCard(card) {
 
 
 /* ==========================================================
-   PAR ENCONTRADO
+   REGISTRAR PAR ENCONTRADO
 ========================================================== */
 
 function registerMatch() {
     boardLocked =
         true;
-
-
-    const letter =
-        firstCard.dataset.letter;
 
 
     [
@@ -1302,6 +1555,12 @@ function registerMatch() {
 
             card.disabled =
                 true;
+
+
+            card.setAttribute(
+                "aria-label",
+                "Carta encontrada"
+            );
         }
     );
 
@@ -1313,7 +1572,7 @@ function registerMatch() {
 
 
     $("gameInstruction").textContent =
-        `Muito bem! Você encontrou o par ${letter}.`;
+        "Muito bem! Você encontrou um par.";
 
 
     window.setTimeout(
@@ -1343,7 +1602,7 @@ function registerMatch() {
 
 
 /* ==========================================================
-   PAR INCORRETO
+   ESCONDER CARTAS INCORRETAS
 ========================================================== */
 
 function hideWrongCards() {
@@ -1362,7 +1621,7 @@ function hideWrongCards() {
 
 
     $("gameInstruction").textContent =
-        "As letras não formam um par. Observe novamente.";
+        "As imagens não formam um par. Observe novamente.";
 
 
     window.setTimeout(
@@ -1376,6 +1635,18 @@ function hideWrongCards() {
             secondCard.classList.remove(
                 "is-flipped",
                 "is-wrong"
+            );
+
+
+            firstCard.setAttribute(
+                "aria-label",
+                "Carta fechada"
+            );
+
+
+            secondCard.setAttribute(
+                "aria-label",
+                "Carta fechada"
             );
 
 
@@ -1395,9 +1666,17 @@ function hideWrongCards() {
 }
 
 
+/* ==========================================================
+   LIMPAR SELEÇÃO
+========================================================== */
+
 function clearSelection() {
-    firstCard = null;
-    secondCard = null;
+    firstCard =
+        null;
+
+
+    secondCard =
+        null;
 }
 
 
@@ -1470,7 +1749,7 @@ function formatTime(seconds) {
 
 
 /* ==========================================================
-   ATUALIZAR INFORMAÇÕES
+   ATUALIZAR PAINEL DO JOGO
 ========================================================== */
 
 function updateStatus() {
@@ -1482,11 +1761,15 @@ function updateStatus() {
         String(matchedPairs);
 
 
-    $("pairsProgressBar").style.width =
-        `${(
+    const percentage =
+        (
             matchedPairs /
             TOTAL_PAIRS
-        ) * 100}%`;
+        ) * 100;
+
+
+    $("pairsProgressBar").style.width =
+        `${percentage}%`;
 
 
     $("pairsProgress").setAttribute(
@@ -1573,7 +1856,9 @@ function restartGame() {
     createBoard();
 
 
-    showOnly(gameScreen);
+    showOnly(
+        gameScreen
+    );
 
 
     document.body.classList.remove(
@@ -1589,7 +1874,7 @@ function restartGame() {
 
 
 /* ==========================================================
-   FINALIZAR JOGO
+   FINALIZAR PARTIDA
 ========================================================== */
 
 function finishGame() {
@@ -1616,6 +1901,7 @@ function finishGame() {
 
     window.setTimeout(
         openResultModal,
+
         520
     );
 }
@@ -1639,6 +1925,15 @@ function openResultModal() {
     document.body.classList.add(
         "page-locked"
     );
+
+
+    window.setTimeout(
+        () => {
+            $("modalMeaningButton").focus();
+        },
+
+        60
+    );
 }
 
 
@@ -1653,9 +1948,7 @@ function closeResultModal() {
     );
 
 
-    if (
-        !initialScreen.hidden
-    ) {
+    if (!initialScreen.hidden) {
         document.body.classList.add(
             "page-locked"
         );
@@ -1669,7 +1962,7 @@ function closeResultModal() {
 
 
 /* ==========================================================
-   PRODUZIR A TELA DE SIGNIFICADOS
+   PRODUZIR TELA DE SIGNIFICADOS
 ========================================================== */
 
 function renderMeaningScreen() {
@@ -1686,121 +1979,211 @@ function renderMeaningScreen() {
         $("meaningGrid");
 
 
+    grid.innerHTML =
+        "";
+
+
     const fragment =
         document.createDocumentFragment();
 
 
     MEANINGS.forEach(
-        (item, index) => {
-            const card =
+        (
+            item,
+            index
+        ) => {
+            const article =
                 document.createElement(
                     "article"
                 );
 
 
-            card.className =
+            article.className =
                 "meaning-card";
 
 
-            card.innerHTML = `
-                <div class="meaning-images">
-
-                    <figure class="meaning-image-box symbol">
-
-                        <img
-                            src="${item.symbol}"
-                            alt="Símbolo ${item.name}"
-                            loading="lazy"
-                            decoding="async"
-                        />
-
-                        <figcaption class="meaning-image-label">
-                            SÍMBOLO
-                        </figcaption>
-
-                    </figure>
-
-
-                    <figure class="meaning-image-box">
-
-                        <img
-                            src="${item.illustration}"
-                            alt="Representação de ${item.translation}"
-                            loading="lazy"
-                            decoding="async"
-                        />
-
-                        <figcaption class="meaning-image-label">
-                            REPRESENTAÇÃO
-                        </figcaption>
-
-                    </figure>
-
-                </div>
-
-
-                <div class="meaning-body">
-
-                    <p class="meaning-number">
-                        ADINKRA ${String(
-                            index + 1
-                        ).padStart(2, "0")}
-                    </p>
-
-                    <h3>
-                        ${item.name}
-                    </h3>
-
-                    <p class="meaning-translation">
-                        “${item.translation}”
-                    </p>
-
-                    <p class="meaning-description">
-                        ${item.description}
-                    </p>
-
-                </div>
-            `;
-
-
-            card
-                .querySelectorAll("img")
-                .forEach(
-                    (image) => {
-                        image.addEventListener(
-                            "error",
-
-                            () => {
-                                const isSymbol =
-                                    Boolean(
-                                        image.closest(
-                                            ".symbol"
-                                        )
-                                    );
-
-
-                                image.src =
-                                    placeholderImage(
-                                        item.letter,
-
-                                        isSymbol
-                                            ? "symbol"
-                                            : "illustration",
-
-                                        item.pair - 1
-                                    );
-                            },
-
-                            {
-                                once: true
-                            }
-                        );
-                    }
+            const imagesContainer =
+                document.createElement(
+                    "div"
                 );
 
 
+            imagesContainer.className =
+                "meaning-images";
+
+
+            /*
+                Símbolo.
+            */
+
+            const symbolFigure =
+                document.createElement(
+                    "figure"
+                );
+
+
+            symbolFigure.className =
+                "meaning-image-box symbol";
+
+
+            const symbolImage =
+                cloneCachedImage(
+                    item.symbolId,
+                    `Símbolo ${item.name}`
+                );
+
+
+            const symbolLabel =
+                document.createElement(
+                    "figcaption"
+                );
+
+
+            symbolLabel.className =
+                "meaning-image-label";
+
+
+            symbolLabel.textContent =
+                "SÍMBOLO";
+
+
+            symbolFigure.append(
+                symbolImage,
+                symbolLabel
+            );
+
+
+            /*
+                Representação colorida.
+            */
+
+            const illustrationFigure =
+                document.createElement(
+                    "figure"
+                );
+
+
+            illustrationFigure.className =
+                "meaning-image-box";
+
+
+            const illustrationImage =
+                cloneCachedImage(
+                    item.illustrationId,
+                    `Representação de ${item.translation}`
+                );
+
+
+            const illustrationLabel =
+                document.createElement(
+                    "figcaption"
+                );
+
+
+            illustrationLabel.className =
+                "meaning-image-label";
+
+
+            illustrationLabel.textContent =
+                "REPRESENTAÇÃO";
+
+
+            illustrationFigure.append(
+                illustrationImage,
+                illustrationLabel
+            );
+
+
+            imagesContainer.append(
+                symbolFigure,
+                illustrationFigure
+            );
+
+
+            /*
+                Texto explicativo.
+            */
+
+            const body =
+                document.createElement(
+                    "div"
+                );
+
+
+            body.className =
+                "meaning-body";
+
+
+            const number =
+                document.createElement(
+                    "p"
+                );
+
+
+            number.className =
+                "meaning-number";
+
+
+            number.textContent =
+                `ADINKRA ${String(
+                    index + 1
+                ).padStart(2, "0")}`;
+
+
+            const title =
+                document.createElement(
+                    "h3"
+                );
+
+
+            title.textContent =
+                item.name;
+
+
+            const translation =
+                document.createElement(
+                    "p"
+                );
+
+
+            translation.className =
+                "meaning-translation";
+
+
+            translation.textContent =
+                `“${item.translation}”`;
+
+
+            const description =
+                document.createElement(
+                    "p"
+                );
+
+
+            description.className =
+                "meaning-description";
+
+
+            description.textContent =
+                item.description;
+
+
+            body.append(
+                number,
+                title,
+                translation,
+                description
+            );
+
+
+            article.append(
+                imagesContainer,
+                body
+            );
+
+
             fragment.appendChild(
-                card
+                article
             );
         }
     );
@@ -1813,7 +2196,7 @@ function renderMeaningScreen() {
 
 
 /* ==========================================================
-   ABRIR A TELA DE SIGNIFICADOS
+   ABRIR TELA DE SIGNIFICADOS
 ========================================================== */
 
 function openMeaningScreen() {
@@ -1870,23 +2253,19 @@ function backToCompletedGame() {
 ========================================================== */
 
 function registerServiceWorker() {
-    if (
-        !(
-            "serviceWorker" in
-            navigator
-        )
-    ) {
-        return;
-    }
+    const isSupported =
+        "serviceWorker" in navigator;
+
+
+    const validProtocol =
+        window.location.protocol === "https:" ||
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1";
 
 
     if (
-        ![
-            "https:",
-            "http:"
-        ].includes(
-            window.location.protocol
-        )
+        !isSupported ||
+        !validProtocol
     ) {
         return;
     }

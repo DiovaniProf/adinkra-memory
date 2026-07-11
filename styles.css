@@ -15,7 +15,7 @@
     --green-light: #c9f8d2;
 
     --text: #fffaf0;
-    --soft: rgba(255, 250, 240, 0.78);
+    --soft: rgba(255, 250, 240, 0.8);
     --dark-text: #281308;
 
     --border: rgba(245, 198, 95, 0.5);
@@ -78,6 +78,7 @@ body {
         );
 
     background-attachment: fixed;
+
     overflow-x: hidden;
 }
 
@@ -177,6 +178,7 @@ img {
 .initial-screen.is-leaving {
     opacity: 0;
     visibility: hidden;
+
     pointer-events: none;
 }
 
@@ -264,6 +266,8 @@ img {
 
 .initial-copy h1 {
     margin-top: 10px;
+
+    color: var(--text);
 
     font-size:
         clamp(2.7rem, 6vw, 6rem);
@@ -380,6 +384,12 @@ img {
 }
 
 
+.preview-card:hover img {
+    transform:
+        scale(1.04);
+}
+
+
 .preview-card-left {
     z-index: 1;
 
@@ -448,6 +458,7 @@ img {
 
 .loading-row {
     display: flex;
+    align-items: center;
     justify-content: space-between;
 
     gap: 14px;
@@ -500,6 +511,9 @@ img {
             var(--green)
         );
 
+    box-shadow:
+        0 0 18px rgba(245, 198, 95, 0.42);
+
     transition:
         width 0.25s ease;
 }
@@ -509,7 +523,7 @@ img {
     margin-top: 9px;
 
     color:
-        rgba(255, 250, 240, 0.63);
+        rgba(255, 250, 240, 0.65);
 
     font-size: 0.88rem;
 
@@ -517,7 +531,7 @@ img {
 }
 
 
-.temporary-mode {
+.local-mode-information {
     display: flex;
     align-items: center;
 
@@ -530,21 +544,22 @@ img {
     padding: 11px 14px;
 
     border:
-        1px solid rgba(245, 198, 95, 0.28);
+        1px solid rgba(103, 204, 124, 0.38);
 
     border-radius: 14px;
 
     color:
-        rgba(255, 232, 166, 0.86);
+        rgba(222, 255, 228, 0.92);
 
     background:
-        rgba(245, 198, 95, 0.07);
+        rgba(103, 204, 124, 0.08);
 
-    font-size: 0.88rem;
+    font-size:
+        clamp(0.78rem, 1.1vw, 0.92rem);
 }
 
 
-.temporary-mode span {
+.local-mode-information > span {
     display: grid;
     place-items: center;
 
@@ -555,10 +570,12 @@ img {
 
     border-radius: 50%;
 
-    color: var(--dark-text);
+    color: #17391e;
 
     background:
-        var(--gold);
+        var(--green-light);
+
+    font-weight: 900;
 }
 
 
@@ -592,6 +609,15 @@ img {
 
     filter:
         brightness(1.07);
+}
+
+
+.primary-button:active,
+.secondary-button:active,
+.control-button:active,
+.meaning-button:active {
+    transform:
+        translateY(0);
 }
 
 
@@ -636,10 +662,13 @@ img {
 
     box-shadow:
         0 14px 34px rgba(103, 204, 124, 0.3);
+
+    font-size:
+        clamp(0.96rem, 1.6vw, 1.18rem);
 }
 
 
-.primary-button span {
+.primary-button > span {
     display: grid;
     place-items: center;
 
@@ -701,7 +730,7 @@ img {
 
 
 /* ==========================================================
-   TELA DO JOGO E TELA DOS SIGNIFICADOS
+   TELA DO JOGO E TELA DE SIGNIFICADOS
 ========================================================== */
 
 .game-screen,
@@ -733,6 +762,11 @@ img {
 }
 
 
+/*
+    O arquivo de fundo é opcional.
+    Caso não exista, os gradientes continuam funcionando.
+*/
+
 .game-screen::before,
 .meaning-screen::before {
     content: "";
@@ -744,7 +778,7 @@ img {
     pointer-events: none;
 
     background:
-        url("imagens/fundo-tracos-adinkra.webp")
+        url("IMAGENS/fundo-tracos-adinkra.webp")
         center / cover
         no-repeat;
 
@@ -763,6 +797,11 @@ img {
     pointer-events: none;
 
     background:
+        radial-gradient(
+            circle at center,
+            rgba(92, 43, 15, 0.05),
+            rgba(11, 5, 3, 0.76) 78%
+        ),
         linear-gradient(
             135deg,
             rgba(14, 6, 3, 0.76),
@@ -805,8 +844,8 @@ img {
     background:
         linear-gradient(
             135deg,
-            rgba(37, 16, 7, 0.93),
-            rgba(101, 42, 13, 0.87)
+            rgba(37, 16, 7, 0.94),
+            rgba(101, 42, 13, 0.88)
         );
 
     box-shadow:
@@ -824,6 +863,9 @@ img {
         clamp(2rem, 4.7vw, 4.1rem);
 
     line-height: 0.98;
+
+    text-shadow:
+        0 4px 0 rgba(0, 0, 0, 0.28);
 }
 
 
@@ -838,7 +880,7 @@ img {
 
 
 /* ==========================================================
-   INFORMAÇÕES DO JOGO
+   INFORMAÇÕES DA PARTIDA
 ========================================================== */
 
 .game-status {
@@ -863,14 +905,14 @@ img {
         var(--radius);
 
     background:
-        rgba(28, 13, 6, 0.86);
+        rgba(28, 13, 6, 0.88);
 
     box-shadow:
         0 9px 24px rgba(0, 0, 0, 0.2);
 }
 
 
-.status-card > span {
+.status-label {
     display: block;
 
     margin-bottom: 5px;
@@ -890,7 +932,8 @@ img {
 .status-card strong {
     color: var(--gold-light);
 
-    font-size: 1.35rem;
+    font-size:
+        clamp(1.15rem, 1.8vw, 1.45rem);
 }
 
 
@@ -911,6 +954,8 @@ img {
     width: 0;
     height: 100%;
 
+    border-radius: inherit;
+
     background:
         linear-gradient(
             90deg,
@@ -930,20 +975,26 @@ img {
     margin: 14px 0;
     padding: 13px 18px;
 
+    border:
+        1px solid rgba(255, 255, 255, 0.07);
+
     border-radius:
         var(--radius);
 
     background:
         rgba(0, 0, 0, 0.3);
 
-    text-align: center;
+    font-size:
+        clamp(0.96rem, 1.3vw, 1.1rem);
 
     line-height: 1.45;
+
+    text-align: center;
 }
 
 
 /* ==========================================================
-   CARTAS DO JOGO
+   TABULEIRO
 ========================================================== */
 
 .memory-grid {
@@ -958,6 +1009,10 @@ img {
     width: 100%;
 }
 
+
+/* ==========================================================
+   CARTAS 16:9
+========================================================== */
 
 .memory-card {
     position: relative;
@@ -986,8 +1041,10 @@ img {
     position: absolute;
     inset: 0;
 
-    border-radius:
-        inherit;
+    width: 100%;
+    height: 100%;
+
+    border-radius: inherit;
 
     transform-style:
         preserve-3d;
@@ -996,6 +1053,13 @@ img {
         transform 0.58s
         cubic-bezier(0.2, 0.72, 0.25, 1),
         filter 0.22s ease;
+}
+
+
+.memory-card:hover
+.memory-card-inner {
+    filter:
+        brightness(1.07);
 }
 
 
@@ -1015,8 +1079,10 @@ img {
     display: grid;
     place-items: center;
 
-    border-radius:
-        inherit;
+    width: 100%;
+    height: 100%;
+
+    border-radius: inherit;
 
     overflow: hidden;
 
@@ -1027,6 +1093,10 @@ img {
         hidden;
 }
 
+
+/* ==========================================================
+   VERSO — IMAGEM CARTA
+========================================================== */
 
 .memory-card-back {
     border:
@@ -1040,6 +1110,22 @@ img {
         var(--card-shadow);
 }
 
+
+.memory-card-back img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    pointer-events: none;
+
+    user-select: none;
+}
+
+
+/* ==========================================================
+   FRENTE — IMG01 ATÉ IMG20
+========================================================== */
 
 .memory-card-front {
     transform:
@@ -1056,18 +1142,36 @@ img {
 }
 
 
-.memory-card-back img,
 .memory-card-front img {
     width: 100%;
     height: 100%;
-
-    object-fit: cover;
 
     pointer-events: none;
 
     user-select: none;
 }
 
+
+.memory-card.symbol-card
+.memory-card-front img {
+    object-fit: contain;
+
+    padding: 3%;
+
+    background:
+        #ffffff;
+}
+
+
+.memory-card.illustration-card
+.memory-card-front img {
+    object-fit: cover;
+}
+
+
+/* ==========================================================
+   CARTAS ENCONTRADAS
+========================================================== */
 
 .memory-card.is-matched {
     cursor: default;
@@ -1141,7 +1245,7 @@ img {
 
 
 /* ==========================================================
-   TELA DE SIGNIFICADOS — TEXTOS GRANDES
+   TELA DE SIGNIFICADOS
 ========================================================== */
 
 .meaning-subtitle {
@@ -1228,7 +1332,7 @@ img {
 .meaning-image-box.symbol img {
     object-fit: contain;
 
-    padding: 4%;
+    padding: 3%;
 
     background:
         #ffffff;
@@ -1376,6 +1480,11 @@ img {
         var(--radius-large);
 
     background:
+        radial-gradient(
+            circle at top,
+            rgba(245, 198, 95, 0.16),
+            transparent 34%
+        ),
         linear-gradient(
             145deg,
             #241006,
@@ -1425,6 +1534,8 @@ img {
     margin-top: 14px;
 
     color: var(--soft);
+
+    font-size: 1.05rem;
 
     line-height: 1.5;
 }
@@ -1538,26 +1649,23 @@ img {
 
 
 /* ==========================================================
-   TELA DE SIGNIFICADOS EM TABLETS
+   SIGNIFICADOS EM TELAS MÉDIAS
 ========================================================== */
 
 @media (max-width: 1260px) {
 
     .meaning-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
     }
 
 
     .meaning-card {
-        width: min(100%, 1050px);
+        width:
+            min(100%, 1050px);
 
-        margin-inline: auto;
-    }
-
-
-    .meaning-description {
-        font-size:
-            clamp(1.18rem, 2vw, 1.4rem);
+        margin-inline:
+            auto;
     }
 
 }
@@ -1570,7 +1678,8 @@ img {
 @media (max-width: 1120px) {
 
     .initial-container {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
 
         width:
             min(96vw, 900px);
@@ -1578,12 +1687,23 @@ img {
 
 
     .initial-copy {
-        text-align: center;
+        text-align:
+            center;
     }
 
 
     .introductory-content {
-        margin-inline: auto;
+        margin-inline:
+            auto;
+    }
+
+
+    .preview-area {
+        width:
+            min(100%, 700px);
+
+        margin-inline:
+            auto;
     }
 
 
@@ -1608,26 +1728,32 @@ img {
 @media (max-width: 760px) {
 
     body.page-locked {
-        overflow-y: auto;
+        overflow-y:
+            auto;
     }
 
 
     .initial-screen {
-        position: absolute;
+        position:
+            absolute;
 
-        align-items: start;
+        align-items:
+            start;
 
-        padding: 10px;
+        padding:
+            10px;
     }
 
 
     .initial-container {
-        width: 100%;
+        width:
+            100%;
 
         padding:
             22px 15px;
 
-        border-radius: 20px;
+        border-radius:
+            20px;
     }
 
 
@@ -1638,30 +1764,72 @@ img {
 
 
     .introductory-content p {
-        text-align: left;
+        text-align:
+            left;
+    }
+
+
+    .preview-cards {
+        aspect-ratio:
+            16 / 10.8;
+    }
+
+
+    .preview-card {
+        width:
+            78%;
+    }
+
+
+    .loading-row {
+        align-items:
+            flex-end;
+    }
+
+
+    #loadingText {
+        max-width:
+            78%;
     }
 
 
     .game-screen,
     .meaning-screen {
-        width: 100%;
+        width:
+            100%;
 
-        padding: 10px;
+        padding:
+            10px;
+    }
+
+
+    .game-screen::before,
+    .meaning-screen::before {
+        background-size:
+            auto 100%;
+
+        opacity:
+            0.11;
     }
 
 
     .game-header,
     .meaning-header {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction:
+            column;
 
-        text-align: center;
+        align-items:
+            stretch;
+
+        text-align:
+            center;
     }
 
 
     .game-controls,
     .meaning-controls {
-        justify-content: center;
+        justify-content:
+            center;
     }
 
 
@@ -1675,26 +1843,38 @@ img {
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
 
-        gap: 9px;
+        gap:
+            9px;
+    }
+
+
+    .memory-card {
+        border-radius:
+            12px;
     }
 
 
     .completion-panel {
-        flex-direction: column;
+        flex-direction:
+            column;
 
-        text-align: center;
+        text-align:
+            center;
     }
 
 
     .meaning-subtitle {
-        font-size: 1.08rem;
+        font-size:
+            1.08rem;
 
-        text-align: center;
+        text-align:
+            center;
     }
 
 
     .meaning-images {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
     }
 
 
@@ -1720,14 +1900,11 @@ img {
         font-size:
             clamp(1.08rem, 4.6vw, 1.28rem);
 
-        line-height: 1.72;
+        line-height:
+            1.72;
 
-        text-align: left;
-    }
-
-
-    .meaning-image-label {
-        font-size: 0.82rem;
+        text-align:
+            left;
     }
 
 }
@@ -1741,17 +1918,142 @@ img {
 
     .game-status,
     .result-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
     }
 
 
     .meaning-card h3 {
-        font-size: 1.75rem;
+        font-size:
+            1.75rem;
     }
 
 
     .meaning-description {
-        font-size: 1.05rem;
+        font-size:
+            1.05rem;
+    }
+
+}
+
+
+/* ==========================================================
+   DISPOSITIVOS NA HORIZONTAL
+========================================================== */
+
+@media (max-height: 650px) and (orientation: landscape) {
+
+    .initial-screen {
+        position:
+            absolute;
+
+        align-items:
+            start;
+    }
+
+
+    .initial-container {
+        grid-template-columns:
+            1.05fr 0.95fr;
+
+        width:
+            min(98vw, 1200px);
+
+        min-height:
+            auto;
+
+        padding:
+            18px 24px;
+    }
+
+
+    .initial-copy h1 {
+        font-size:
+            clamp(2rem, 5vw, 3.7rem);
+    }
+
+
+    .introductory-content {
+        margin-top:
+            14px;
+
+        padding:
+            13px 16px;
+    }
+
+
+    .introductory-content p {
+        font-size:
+            0.83rem;
+
+        line-height:
+            1.42;
+    }
+
+
+    .preview-cards {
+        width:
+            min(100%, 520px);
+    }
+
+
+    .loading-panel {
+        margin-top:
+            5px;
+
+        padding:
+            9px 12px;
+    }
+
+
+    .primary-button {
+        min-height:
+            44px;
+
+        margin-top:
+            10px;
+    }
+
+
+    .game-header {
+        padding:
+            12px 18px;
+    }
+
+
+    .game-status {
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
+
+        margin-top:
+            8px;
+    }
+
+
+    .status-card {
+        padding:
+            8px 10px;
+    }
+
+
+    .game-instruction {
+        min-height:
+            38px;
+
+        margin:
+            8px 0;
+
+        padding:
+            8px 12px;
+    }
+
+
+    .memory-grid {
+        grid-template-columns:
+            repeat(5, minmax(0, 1fr));
+
+        gap:
+            7px;
     }
 
 }
@@ -1780,3 +2082,4 @@ img {
     }
 
 }
+   
