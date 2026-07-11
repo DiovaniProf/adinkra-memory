@@ -28,7 +28,7 @@
     <main class="app">
 
         <!-- ==================================================
-             TELA 1 — ABERTURA
+             TELA 1 — TELA INICIAL
         =================================================== -->
         <section
             id="initialScreen"
@@ -49,7 +49,6 @@
                     </h1>
 
                     <div class="introductory-content">
-
                         <p>
                             As Adinkras são símbolos visuais ligados aos povos Akan,
                             especialmente aos Asante, em Gana. Elas representam ideias,
@@ -60,7 +59,6 @@
                             Cada símbolo pode inspirar atitudes positivas para a
                             convivência em comunidade.
                         </p>
-
                     </div>
 
                 </div>
@@ -69,8 +67,8 @@
                 <div class="preview-area">
 
                     <!--
-                        As três imagens serão preenchidas pelo JavaScript
-                        com imagens coloridas da pasta IMAGENS.
+                        O JavaScript insere três imagens coloridas
+                        da pasta IMAGENS.
                     -->
                     <div
                         class="preview-cards"
@@ -78,45 +76,39 @@
                     >
 
                         <div class="preview-card preview-card-left">
-
                             <img
                                 id="previewImage1"
                                 alt=""
                                 width="960"
                                 height="540"
                             />
-
                         </div>
 
 
                         <div class="preview-card preview-card-middle">
-
                             <img
                                 id="previewImage2"
                                 alt=""
                                 width="960"
                                 height="540"
                             />
-
                         </div>
 
 
                         <div class="preview-card preview-card-right">
-
                             <img
                                 id="previewImage3"
                                 alt=""
                                 width="960"
                                 height="540"
                             />
-
                         </div>
 
                     </div>
 
 
                     <!-- ==================================================
-                         CARREGAMENTO
+                         PAINEL DE CARREGAMENTO
                     =================================================== -->
                     <div
                         id="loadingPanel"
@@ -127,7 +119,7 @@
                         <div class="loading-row">
 
                             <p id="loadingText">
-                                Localizando as imagens na pasta IMAGENS...
+                                Preparando as imagens do jogo...
                             </p>
 
                             <strong id="loadingPercentage">
@@ -164,16 +156,14 @@
                         id="localModeInformation"
                         class="local-mode-information"
                     >
-
                         <span aria-hidden="true">
                             ✓
                         </span>
 
                         <p>
-                            O jogo utiliza somente os arquivos locais
-                            da pasta <strong>IMAGENS</strong>.
+                            O jogo utiliza as imagens locais da pasta
+                            <strong>IMAGENS</strong>.
                         </p>
-
                     </div>
 
 
@@ -187,22 +177,6 @@
                         <span aria-hidden="true">✓</span>
 
                         PRONTO PARA INICIAR
-                    </button>
-
-
-                    <!--
-                        Mantido temporariamente invisível e desativado.
-                    -->
-                    <button
-                        id="retryButton"
-                        class="secondary-button retry-button"
-                        type="button"
-                        hidden
-                        disabled
-                        aria-hidden="true"
-                        tabindex="-1"
-                    >
-                        TENTAR CARREGAR NOVAMENTE
                     </button>
 
                 </div>
@@ -245,7 +219,6 @@
                         type="button"
                     >
                         <span aria-hidden="true">↻</span>
-
                         Reiniciar
                     </button>
 
@@ -256,7 +229,6 @@
                         type="button"
                     >
                         <span aria-hidden="true">⌂</span>
-
                         Tela inicial
                     </button>
 
@@ -274,7 +246,6 @@
             >
 
                 <article class="status-card">
-
                     <span class="status-label">
                         Jogadas
                     </span>
@@ -282,12 +253,10 @@
                     <strong id="movesCounter">
                         0
                     </strong>
-
                 </article>
 
 
                 <article class="status-card">
-
                     <span class="status-label">
                         Tempo
                     </span>
@@ -295,12 +264,10 @@
                     <strong id="timer">
                         00:00
                     </strong>
-
                 </article>
 
 
                 <article class="status-card">
-
                     <span class="status-label">
                         Pares encontrados
                     </span>
@@ -308,12 +275,10 @@
                     <strong>
                         <span id="pairsCounter">0</span>/10
                     </strong>
-
                 </article>
 
 
-                <article class="status-card">
-
+                <article class="status-card status-progress-card">
                     <span class="status-label">
                         Progresso
                     </span>
@@ -332,7 +297,6 @@
                             class="pairs-progress-bar"
                         ></div>
                     </div>
-
                 </article>
 
             </section>
@@ -360,7 +324,7 @@
 
 
             <!-- ==================================================
-                 CONCLUSÃO DA PARTIDA
+                 PAINEL APÓS ENCONTRAR TODOS OS PARES
             =================================================== -->
             <section
                 id="completionPanel"
@@ -368,7 +332,7 @@
                 hidden
             >
 
-                <div>
+                <div class="completion-text">
 
                     <p class="eyebrow">
                         TODOS OS PARES ENCONTRADOS
@@ -433,7 +397,6 @@
                         type="button"
                     >
                         <span aria-hidden="true">←</span>
-
                         Voltar ao jogo
                     </button>
 
@@ -444,7 +407,6 @@
                         type="button"
                     >
                         <span aria-hidden="true">⌂</span>
-
                         Tela inicial
                     </button>
 
@@ -492,7 +454,10 @@
         hidden
     >
 
-        <div class="modal-overlay"></div>
+        <div
+            id="modalOverlay"
+            class="modal-overlay"
+        ></div>
 
 
         <div class="modal-content">
@@ -524,7 +489,6 @@
             <div class="result-grid">
 
                 <article>
-
                     <span>
                         Jogadas
                     </span>
@@ -532,12 +496,10 @@
                     <strong id="finalMoves">
                         0
                     </strong>
-
                 </article>
 
 
                 <article>
-
                     <span>
                         Tempo
                     </span>
@@ -545,7 +507,6 @@
                     <strong id="finalTime">
                         00:00
                     </strong>
-
                 </article>
 
             </div>
