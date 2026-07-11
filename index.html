@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+
+    <meta
+        name="description"
+        content="Jogo da Memória com Adinkras"
+    />
+
+    <meta
+        name="theme-color"
+        content="#2b1208"
+    />
+
+    <title>Jogo da Memória com Adinkras</title>
+
+    <!-- Carregamento antecipado da arte do verso das cartas -->
+    <link
+        rel="preload"
+        href="imagens/verso-adinkra.webp"
+        as="image"
+        type="image/webp"
+    />
+
+    <!-- Carregamento antecipado dos traços decorativos do fundo -->
+    <link
+        rel="preload"
+        href="imagens/fundo-tracos-adinkra.webp"
+        as="image"
+        type="image/webp"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="page-locked">
+
+    <main class="app">
+
+        <!-- =========================================
+             TELA INICIAL
+        ========================================== -->
+        <section
+            id="initialScreen"
+            class="screen initial-screen"
+            aria-labelledby="initialTitle"
+        >
+            <div class="initial-container">
+
+                <div class="initial-copy">
+
+                    <p class="initial-label">
+                        EXPERIÊNCIA EDUCATIVA
+                    </p>
+
+                    <h1 id="initialTitle">
+                        JOGO DA MEMÓRIA<br />
+                        <span>COM ADINKRAS</span>
+                    </h1>
+
+                    <div class="introductory-content">
+
+                        <p class="introductory-text">
+                            As Adinkras são símbolos visuais ligados aos povos Akan,
+                            especialmente aos Asante, em Gana. Elas representam ideias,
+                            valores, provérbios e ensinamentos transmitidos entre gerações.
+                            Por isso, funcionam como uma importante forma de comunicação
+                            visual e cultural. No diálogo educativo, ajudam crianças e
+                            jovens a refletir sobre respeito, sabedoria e cooperação.
+                            Cada símbolo pode inspirar atitudes positivas para a
+                            convivência em comunidade.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="preview-area">
+
+                    <div
+                        class="preview-cards"
+                        aria-hidden="true"
+                    >
+
+                        <div class="preview-card preview-card-left">
+
+                            <img
+                                src="imagens/verso-adinkra.webp"
+                                alt=""
+                                width="960"
+                                height="540"
+                            />
+
+                        </div>
+
+
+                        <div class="preview-card preview-card-middle">
+
+                            <img
+                                src="imagens/verso-adinkra.webp"
+                                alt=""
+                                width="960"
+                                height="540"
+                            />
+
+                        </div>
+
+
+                        <div class="preview-card preview-card-right">
+
+                            <img
+                                src="imagens/verso-adinkra.webp"
+                                alt=""
+                                width="960"
+                                height="540"
+                            />
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="loadingPanel"
+                        class="loading-panel"
+                        aria-live="polite"
+                    >
+
+                        <div class="loading-row">
+
+                            <p id="loadingText">
+                                Preparando as imagens do jogo...
+                            </p>
+
+                            <strong id="loadingPercentage">
+                                0%
+                            </strong>
+
+                        </div>
+
+
+                        <div
+                            id="loadingTrack"
+                            class="loading-track"
+                            role="progressbar"
+                            aria-label="Carregamento das imagens"
+                            aria-valuemin="0"
+                            aria-valuemax="22"
+                            aria-valuenow="0"
+                        >
+                            <span id="loadingBar"></span>
+                        </div>
+
+
+                        <p
+                            id="loadingCounter"
+                            class="preview-information"
+                        >
+                            0 de 22 recursos preparados
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        id="startButton"
+                        class="primary-button"
+                        type="button"
+                        hidden
+                        disabled
+                    >
+                        <span aria-hidden="true">✓</span>
+
+                        PRONTO PARA INICIAR
+                    </button>
+
+
+                    <button
+                        id="retryButton"
+                        class="secondary-button retry-button"
+                        type="button"
+                        hidden
+                    >
+                        TENTAR CARREGAR NOVAMENTE
+                    </button>
+
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- =========================================
+             TELA DO JOGO
+        ========================================== -->
+        <section
+            id="gameScreen"
+            class="screen game-screen"
+            aria-labelledby="gameTitle"
+            aria-hidden="true"
+            hidden
+        >
+
+            <header class="game-header">
+
+                <div class="game-title-area">
+
+                    <p class="game-eyebrow">
+                        ENCONTRE OS 10 PARES
+                    </p>
+
+                    <h2 id="gameTitle">
+                        JOGO DA MEMÓRIA COM ADINKRAS
+                    </h2>
+
+                </div>
+
+
+                <div class="game-controls">
+
+                    <button
+                        id="restartButton"
+                        class="control-button"
+                        type="button"
+                    >
+                        <span aria-hidden="true">↻</span>
+
+                        Reiniciar
+                    </button>
+
+
+                    <button
+                        id="homeButton"
+                        class="control-button"
+                        type="button"
+                    >
+                        <span aria-hidden="true">⌂</span>
+
+                        Tela inicial
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <section
+                class="game-status"
+                aria-label="Informações da partida"
+            >
+
+                <article class="status-card">
+
+                    <span class="status-label">
+                        Jogadas
+                    </span>
+
+                    <strong id="movesCounter">
+                        0
+                    </strong>
+
+                </article>
+
+
+                <article class="status-card">
+
+                    <span class="status-label">
+                        Tempo
+                    </span>
+
+                    <strong id="timer">
+                        00:00
+                    </strong>
+
+                </article>
+
+
+                <article class="status-card">
+
+                    <span class="status-label">
+                        Pares encontrados
+                    </span>
+
+                    <strong>
+                        <span id="pairsCounter">0</span>/10
+                    </strong>
+
+                </article>
+
+
+                <article class="status-card status-progress-card">
+
+                    <span class="status-label">
+                        Progresso
+                    </span>
+
+
+                    <div
+                        id="pairsProgress"
+                        class="pairs-progress"
+                        role="progressbar"
+                        aria-label="Pares encontrados"
+                        aria-valuemin="0"
+                        aria-valuemax="10"
+                        aria-valuenow="0"
+                    >
+
+                        <div
+                            id="pairsProgressBar"
+                            class="pairs-progress-bar"
+                        ></div>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <p
+                id="gameInstruction"
+                class="game-instruction"
+                aria-live="polite"
+            >
+                Selecione duas cartas para encontrar os pares correspondentes.
+            </p>
+
+
+            <section
+                id="memoryGrid"
+                class="memory-grid"
+                aria-label="Cartas do jogo da memória"
+            >
+                <!-- Cartas produzidas pelo JavaScript -->
+            </section>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================
+         MODAL DE RESULTADO
+    ========================================== -->
+    <div
+        id="resultModal"
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="resultTitle"
+        aria-hidden="true"
+        hidden
+    >
+
+        <div class="modal-overlay"></div>
+
+
+        <div class="modal-content">
+
+            <div
+                class="result-symbol"
+                aria-hidden="true"
+            >
+                ★
+            </div>
+
+
+            <p class="modal-label">
+                EXPERIÊNCIA CONCLUÍDA
+            </p>
+
+
+            <h2 id="resultTitle">
+                Parabéns!
+            </h2>
+
+
+            <p class="result-message">
+                Você encontrou todos os pares do Jogo da Memória com Adinkras.
+            </p>
+
+
+            <div class="result-grid">
+
+                <article class="result-item">
+
+                    <span>
+                        Jogadas
+                    </span>
+
+                    <strong id="finalMoves">
+                        0
+                    </strong>
+
+                </article>
+
+
+                <article class="result-item">
+
+                    <span>
+                        Tempo
+                    </span>
+
+                    <strong id="finalTime">
+                        00:00
+                    </strong>
+
+                </article>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    id="playAgainButton"
+                    class="primary-button"
+                    type="button"
+                >
+                    JOGAR NOVAMENTE
+                </button>
+
+
+                <button
+                    id="modalHomeButton"
+                    class="secondary-button"
+                    type="button"
+                >
+                    VOLTAR À TELA INICIAL
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
