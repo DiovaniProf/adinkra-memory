@@ -10,303 +10,622 @@ const TOTAL_PAIRS = 10;
 const CARD_BACK_ID = "cardBack";
 
 const CARD_BACK_PATH =
-    "imagens/verso-adinkra.webp";
-
-
-const BACKGROUND_ID = "backgroundLines";
-
-const BACKGROUND_PATH =
-    "imagens/fundo-tracos-adinkra.webp";
-
+    "imagens/capa.png";
 
 const MAX_SIMULTANEOUS_LOADS = 5;
 
 
 /* ==========================================================
-   BANCO DE CARTAS
-
-   img01 combina com img02
-   img03 combina com img04
-   e assim sucessivamente.
+   CORES DAS CARTAS PROVISÓRIAS
 ========================================================== */
 
-const CARDS = [
-    {
-        id: "img01",
-        pair: 1,
-        type: "symbol",
-        src: "imagens/img01.webp",
-        alt: "Símbolo correspondente ao pato"
-    },
-    {
-        id: "img02",
-        pair: 1,
-        type: "illustration",
-        src: "imagens/img02.webp",
-        alt: "Pato com a cabeça voltada para trás"
-    },
-
-    {
-        id: "img03",
-        pair: 2,
-        type: "symbol",
-        src: "imagens/img03.webp",
-        alt: "Símbolo correspondente ao pente"
-    },
-    {
-        id: "img04",
-        pair: 2,
-        type: "illustration",
-        src: "imagens/img04.webp",
-        alt: "Pente de madeira"
-    },
-
-    {
-        id: "img05",
-        pair: 3,
-        type: "symbol",
-        src: "imagens/img05.webp",
-        alt: "Símbolo correspondente à borboleta"
-    },
-    {
-        id: "img06",
-        pair: 3,
-        type: "illustration",
-        src: "imagens/img06.webp",
-        alt: "Borboleta colorida"
-    },
-
-    {
-        id: "img07",
-        pair: 4,
-        type: "symbol",
-        src: "imagens/img07.webp",
-        alt: "Símbolo correspondente ao guarda-chuva"
-    },
-    {
-        id: "img08",
-        pair: 4,
-        type: "illustration",
-        src: "imagens/img08.webp",
-        alt: "Guarda-chuva colorido"
-    },
-
-    {
-        id: "img09",
-        pair: 5,
-        type: "symbol",
-        src: "imagens/img09.webp",
-        alt: "Símbolo correspondente à corrente"
-    },
-    {
-        id: "img10",
-        pair: 5,
-        type: "illustration",
-        src: "imagens/img10.webp",
-        alt: "Quatro elos de corrente"
-    },
-
-    {
-        id: "img11",
-        pair: 6,
-        type: "symbol",
-        src: "imagens/img11.webp",
-        alt: "Símbolo correspondente à teia"
-    },
-    {
-        id: "img12",
-        pair: 6,
-        type: "illustration",
-        src: "imagens/img12.webp",
-        alt: "Teia de aranha"
-    },
-
-    {
-        id: "img13",
-        pair: 7,
-        type: "symbol",
-        src: "imagens/img13.webp",
-        alt: "Símbolo correspondente à palmeira"
-    },
-    {
-        id: "img14",
-        pair: 7,
-        type: "illustration",
-        src: "imagens/img14.webp",
-        alt: "Palmeira em uma praia"
-    },
-
-    {
-        id: "img15",
-        pair: 8,
-        type: "symbol",
-        src: "imagens/img15.webp",
-        alt: "Símbolo correspondente à cama"
-    },
-    {
-        id: "img16",
-        pair: 8,
-        type: "illustration",
-        src: "imagens/img16.webp",
-        alt: "Cama em um quarto de rancho"
-    },
-
-    {
-        id: "img17",
-        pair: 9,
-        type: "symbol",
-        src: "imagens/img17.webp",
-        alt: "Símbolo correspondente ao bode"
-    },
-    {
-        id: "img18",
-        pair: 9,
-        type: "illustration",
-        src: "imagens/img18.webp",
-        alt: "Bode adulto com chifres longos"
-    },
-
-    {
-        id: "img19",
-        pair: 10,
-        type: "symbol",
-        src: "imagens/img19.webp",
-        alt: "Símbolo correspondente ao crocodilo"
-    },
-    {
-        id: "img20",
-        pair: 10,
-        type: "illustration",
-        src: "imagens/img20.webp",
-        alt: "Crocodilo em ambiente natural"
-    }
+const PALETTES = [
+    ["#471608", "#a74317", "#f0a536"],
+    ["#17213f", "#305da8", "#6bbcf3"],
+    ["#371047", "#87399b", "#dc82e9"],
+    ["#12382b", "#278663", "#7addae"],
+    ["#4b161e", "#a52d45", "#f48192"],
+    ["#393006", "#a58a16", "#f4d757"],
+    ["#122f40", "#197c91", "#70d9e6"],
+    ["#38210f", "#a05a21", "#efb36a"],
+    ["#251847", "#6844a6", "#ad8bf1"],
+    ["#18360f", "#4c992e", "#9de26d"]
 ];
 
 
 /* ==========================================================
-   RECURSOS QUE SERÃO PRÉ-CARREGADOS
+   PRODUÇÃO DAS CARTAS PROVISÓRIAS
+========================================================== */
 
-   20 imagens das cartas
-   1 imagem do verso
-   1 imagem dos traços do fundo
+function placeholderImage(
+    letter,
+    type,
+    index
+) {
+    const [
+        dark,
+        medium,
+        light
+    ] = PALETTES[
+        index % PALETTES.length
+    ];
+
+
+    const label =
+        type === "symbol"
+            ? "SÍMBOLO"
+            : "IMAGEM";
+
+
+    const svg = `
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="960"
+            height="540"
+            viewBox="0 0 960 540"
+        >
+            <defs>
+                <linearGradient
+                    id="gradient"
+                    x1="0"
+                    y1="0"
+                    x2="1"
+                    y2="1"
+                >
+                    <stop
+                        offset="0"
+                        stop-color="${dark}"
+                    />
+
+                    <stop
+                        offset="0.55"
+                        stop-color="${medium}"
+                    />
+
+                    <stop
+                        offset="1"
+                        stop-color="${light}"
+                    />
+                </linearGradient>
+            </defs>
+
+            <rect
+                width="960"
+                height="540"
+                rx="38"
+                fill="url(#gradient)"
+            />
+
+            <rect
+                x="20"
+                y="20"
+                width="920"
+                height="500"
+                rx="29"
+                fill="none"
+                stroke="#ffe7a0"
+                stroke-width="5"
+                opacity="0.75"
+            />
+
+            <circle
+                cx="480"
+                cy="245"
+                r="150"
+                fill="#120805"
+                opacity="0.35"
+                stroke="#ffe7a0"
+                stroke-width="7"
+            />
+
+            <text
+                x="480"
+                y="315"
+                text-anchor="middle"
+                font-family="Arial"
+                font-size="210"
+                font-weight="900"
+                fill="#fff7dd"
+            >
+                ${letter}
+            </text>
+
+            <rect
+                x="330"
+                y="427"
+                width="300"
+                height="58"
+                rx="29"
+                fill="#130906"
+                opacity="0.6"
+            />
+
+            <text
+                x="480"
+                y="466"
+                text-anchor="middle"
+                font-family="Arial"
+                font-size="26"
+                font-weight="800"
+                letter-spacing="7"
+                fill="#fff4cc"
+            >
+                ${label}
+            </text>
+        </svg>
+    `;
+
+
+    return (
+        "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(svg)
+    );
+}
+
+
+/* ==========================================================
+   CAPA PROVISÓRIA DE SEGURANÇA
+========================================================== */
+
+function fallbackBackImage() {
+    const svg = `
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="960"
+            height="540"
+        >
+            <defs>
+                <linearGradient
+                    id="gradient"
+                    x1="0"
+                    y1="0"
+                    x2="1"
+                    y2="1"
+                >
+                    <stop
+                        stop-color="#241006"
+                    />
+
+                    <stop
+                        offset="1"
+                        stop-color="#d27a22"
+                    />
+                </linearGradient>
+            </defs>
+
+            <rect
+                width="960"
+                height="540"
+                rx="36"
+                fill="url(#gradient)"
+            />
+
+            <rect
+                x="22"
+                y="22"
+                width="916"
+                height="496"
+                rx="28"
+                fill="none"
+                stroke="#f5c65f"
+                stroke-width="7"
+            />
+
+            <circle
+                cx="480"
+                cy="270"
+                r="145"
+                fill="#1a0b05"
+                opacity="0.58"
+                stroke="#ffe8a6"
+                stroke-width="8"
+            />
+
+            <text
+                x="480"
+                y="250"
+                text-anchor="middle"
+                font-family="Arial"
+                font-size="60"
+                font-weight="900"
+                fill="#f5c65f"
+            >
+                ADINKRA
+            </text>
+
+            <text
+                x="480"
+                y="340"
+                text-anchor="middle"
+                font-family="Arial"
+                font-size="80"
+                fill="#ffe8a6"
+            >
+                ◈
+            </text>
+        </svg>
+    `;
+
+
+    return (
+        "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(svg)
+    );
+}
+
+
+/* ==========================================================
+   DEFINIÇÃO DAS 20 CARTAS
+========================================================== */
+
+const CARD_DEFINITIONS =
+    Array.from(
+        { length: 10 },
+
+        (_, pairIndex) => {
+            const letter =
+                String.fromCharCode(
+                    65 + pairIndex
+                );
+
+
+            const pair =
+                pairIndex + 1;
+
+
+            return [
+                {
+                    id:
+                        `img${String(
+                            pairIndex * 2 + 1
+                        ).padStart(2, "0")}`,
+
+                    pair,
+                    letter,
+
+                    type: "symbol"
+                },
+
+                {
+                    id:
+                        `img${String(
+                            pairIndex * 2 + 2
+                        ).padStart(2, "0")}`,
+
+                    pair,
+                    letter,
+
+                    type: "illustration"
+                }
+            ];
+        }
+    ).flat();
+
+
+const CARDS =
+    CARD_DEFINITIONS.map(
+        (card) => ({
+            ...card,
+
+            src:
+                placeholderImage(
+                    card.letter,
+                    card.type,
+                    card.pair - 1
+                ),
+
+            alt:
+                `Carta provisória ${card.letter}, ` +
+                (
+                    card.type === "symbol"
+                        ? "símbolo"
+                        : "imagem"
+                )
+        })
+    );
+
+
+/* ==========================================================
+   RECURSOS DA TELA INICIAL
 ========================================================== */
 
 const RESOURCES = [
-    ...CARDS.map((card) => ({
-        id: card.id,
-        src: card.src,
-        alt: card.alt
-    })),
+    ...CARDS.map(
+        (card) => ({
+            id: card.id,
+            src: card.src,
+            alt: card.alt,
+            letter: card.letter
+        })
+    ),
 
     {
         id: CARD_BACK_ID,
-        src: CARD_BACK_PATH,
-        alt: "Arte do verso das cartas"
-    },
 
-    {
-        id: BACKGROUND_ID,
-        src: BACKGROUND_PATH,
-        alt: "Traços decorativos do plano de fundo"
+        src:
+            CARD_BACK_PATH,
+
+        alt:
+            "Arte do verso das cartas"
     }
 ];
 
 
 /* ==========================================================
-   ELEMENTOS DA INTERFACE
+   SIGNIFICADOS DAS ADINKRAS
 ========================================================== */
 
-const initialScreen =
-    document.getElementById("initialScreen");
+const MEANINGS = [
+    {
+        pair: 1,
+        letter: "A",
 
-const gameScreen =
-    document.getElementById("gameScreen");
+        name:
+            "Sankofa",
 
+        translation:
+            "Volte e busque",
 
-const loadingText =
-    document.getElementById("loadingText");
+        symbol:
+            "https://i.postimg.cc/2bqyhWvZ/img01.jpg",
 
-const loadingPercentage =
-    document.getElementById("loadingPercentage");
+        illustration:
+            "https://i.postimg.cc/hJZhXsJn/img02.png",
 
-const loadingCounter =
-    document.getElementById("loadingCounter");
+        description:
+            "Símbolo da importância de aprender com o passado. " +
+            "Essencialmente, toda experiência de vida deve torná-lo " +
+            "mais sábio; mesmo uma experiência ruim ensina como não proceder."
+    },
 
-const loadingTrack =
-    document.getElementById("loadingTrack");
+    {
+        pair: 10,
+        letter: "J",
 
-const loadingBar =
-    document.getElementById("loadingBar");
+        name:
+            "Denkyem",
 
+        translation:
+            "Crocodilo",
 
-const startButton =
-    document.getElementById("startButton");
+        symbol:
+            "https://i.postimg.cc/MMcHVBRf/img19.jpg",
 
-const retryButton =
-    document.getElementById("retryButton");
+        illustration:
+            "https://i.postimg.cc/94gzDb4z/img20.png",
 
+        description:
+            "Símbolo de adaptabilidade. O crocodilo vive na água, " +
+            "mas respira ar, demonstrando a capacidade de ajustar-se " +
+            "às circunstâncias."
+    },
 
-const restartButton =
-    document.getElementById("restartButton");
+    {
+        pair: 9,
+        letter: "I",
 
-const homeButton =
-    document.getElementById("homeButton");
+        name:
+            "Dwennimmen",
 
+        translation:
+            "Chifres de carneiro",
 
-const movesCounter =
-    document.getElementById("movesCounter");
+        symbol:
+            "https://i.postimg.cc/R63hKtfn/img17.jpg",
 
-const timer =
-    document.getElementById("timer");
+        illustration:
+            "https://i.postimg.cc/4K2nYPKT/img18.png",
 
-const pairsCounter =
-    document.getElementById("pairsCounter");
+        description:
+            "Símbolo de humildade unida à força. O carneiro luta " +
+            "ferozmente contra um adversário, mas também se submete " +
+            "humildemente ao abate, enfatizando que até os fortes " +
+            "precisam ser humildes."
+    },
 
-const pairsProgress =
-    document.getElementById("pairsProgress");
+    {
+        pair: 5,
+        letter: "E",
 
-const pairsProgressBar =
-    document.getElementById("pairsProgressBar");
+        name:
+            "Nkonsonkonson",
 
-const gameInstruction =
-    document.getElementById("gameInstruction");
+        translation:
+            "Elo de corrente",
 
-const memoryGrid =
-    document.getElementById("memoryGrid");
+        symbol:
+            "https://i.postimg.cc/k6VGKS8V/img09.jpg",
 
+        illustration:
+            "https://i.postimg.cc/hJZhXsJg/img10.png",
 
-const resultModal =
-    document.getElementById("resultModal");
+        description:
+            "Símbolo de unidade e relações humanas. Lembra a necessidade " +
+            "de contribuir para a comunidade e que, na união, há força. " +
+            "Representa o chamado à ação, a coragem, a determinação e a " +
+            "prontidão para enfrentar desafios."
+    },
 
-const finalMoves =
-    document.getElementById("finalMoves");
+    {
+        pair: 2,
+        letter: "B",
 
-const finalTime =
-    document.getElementById("finalTime");
+        name:
+            "Duafe",
 
-const playAgainButton =
-    document.getElementById("playAgainButton");
+        translation:
+            "Pente de madeira",
 
-const modalHomeButton =
-    document.getElementById("modalHomeButton");
+        symbol:
+            "https://i.postimg.cc/47KyVcty/img03.jpg",
+
+        illustration:
+            "https://i.postimg.cc/d7NDh67Y/img04.png",
+
+        description:
+            "Símbolo de beleza e limpeza; também de qualidades femininas " +
+            "como bondade, amor e cuidado."
+    },
+
+    {
+        pair: 8,
+        letter: "H",
+
+        name:
+            "Kete Pa",
+
+        translation:
+            "Boa cama",
+
+        symbol:
+            "https://i.postimg.cc/PLVNCyLm/img15.jpg",
+
+        illustration:
+            "https://i.postimg.cc/nsSMX2sc/img16.png",
+
+        description:
+            "Símbolo de um bom casamento e de um bom descanso."
+    },
+
+    {
+        pair: 6,
+        letter: "F",
+
+        name:
+            "Ananse Ntontan",
+
+        translation:
+            "Teia de aranha",
+
+        symbol:
+            "https://i.postimg.cc/06Xrzn67/img11.jpg",
+
+        illustration:
+            "https://i.postimg.cc/KKp41fKR/img12.png",
+
+        description:
+            "Símbolo de sabedoria, criatividade, inteligência, " +
+            "engenhosidade e poder criativo. Inspirado na Aranha, " +
+            "figura lendária do folclore africano, enfatiza pensamento " +
+            "estratégico, inovação e capacidade de adaptar-se e superar desafios."
+    },
+
+    {
+        pair: 7,
+        letter: "G",
+
+        name:
+            "Abe Dua",
+
+        translation:
+            "Palmeira",
+
+        symbol:
+            "https://i.postimg.cc/mcphPjcM/img13.jpg",
+
+        illustration:
+            "https://i.postimg.cc/WDYtd8Dz/img14.png",
+
+        description:
+            "Símbolo de riqueza e engenhosidade. Representa resistência, " +
+            "prosperidade e capacidade de prover para si e para os outros. " +
+            "Assim como toda parte da palmeira é útil, ensina recurso, " +
+            "força e sustentabilidade para superar desafios."
+    },
+
+    {
+        pair: 3,
+        letter: "C",
+
+        name:
+            "Fafanto",
+
+        translation:
+            "Borboleta",
+
+        symbol:
+            "https://i.postimg.cc/f3qkVC30/img05.jpg",
+
+        illustration:
+            "https://i.postimg.cc/QBYVFmBF/img06.png",
+
+        description:
+            "Símbolo de transformação e mudança. Representa beleza, " +
+            "graça e a natureza delicada da vida. Significa crescimento, " +
+            "transformação e a importância de acolher mudanças com " +
+            "resiliência e elegância."
+    },
+
+    {
+        pair: 4,
+        letter: "D",
+
+        name:
+            "Ohene Kyiniie",
+
+        translation:
+            "Guarda-chuva do rei",
+
+        symbol:
+            "https://i.postimg.cc/67bT8c7v/img07.jpg",
+
+        illustration:
+            "https://i.postimg.cc/gwtrxsw8/img08.png",
+
+        description:
+            "Símbolo de liderança e proteção."
+    }
+];
 
 
 /* ==========================================================
-   ESTADO DO JOGO
+   ELEMENTOS
 ========================================================== */
 
-const imageCache = new Map();
+const $ =
+    (id) =>
+        document.getElementById(id);
 
+
+const initialScreen =
+    $("initialScreen");
+
+const gameScreen =
+    $("gameScreen");
+
+const meaningScreen =
+    $("meaningScreen");
+
+
+const previewImages = [
+    $("previewImage1"),
+    $("previewImage2"),
+    $("previewImage3")
+];
+
+
+const previewCards = [
+    ...document.querySelectorAll(
+        ".preview-card"
+    )
+];
+
+
+const imageCache =
+    new Map();
+
+
+/* ==========================================================
+   ESTADO
+========================================================== */
 
 let resourcesReady = false;
 let loadingInProgress = false;
-
 
 let firstCard = null;
 let secondCard = null;
 
 let boardLocked = false;
-
 
 let moves = 0;
 let matchedPairs = 0;
@@ -316,71 +635,89 @@ let elapsedSeconds = 0;
 let timerInterval = null;
 let timerStarted = false;
 
+let meaningRendered = false;
+
 
 /* ==========================================================
-   CARREGAMENTO E DECODIFICAÇÃO DE UMA IMAGEM
+   CARREGAR UMA IMAGEM
 ========================================================== */
 
-function loadAndDecodeImage(resource) {
-    return new Promise((resolve, reject) => {
-        const image = new Image();
+function loadImage(resource) {
+    return new Promise(
+        (resolve) => {
+            const image =
+                new Image();
 
 
-        image.alt = resource.alt;
-
-        image.decoding = "async";
-
-        image.loading = "eager";
+            image.alt =
+                resource.alt;
 
 
-        image.onload = async () => {
-            try {
-                /*
-                    Garante que a imagem esteja decodificada
-                    antes de liberar o jogo.
-                */
-
-                if (
-                    typeof image.decode === "function"
-                ) {
-                    await image.decode();
-                }
-
-            } catch (error) {
-                /*
-                    Mesmo que decode apresente erro,
-                    o evento load confirma que a imagem
-                    pode ser utilizada.
-                */
-            }
+            image.decoding =
+                "async";
 
 
-            imageCache.set(
-                resource.id,
-                image
-            );
+            image.onload =
+                async () => {
+                    try {
+                        await image.decode?.();
+
+                    } catch (error) {
+                        /*
+                            O evento load já confirma
+                            que a imagem pode ser usada.
+                        */
+                    }
 
 
-            resolve(resource);
-        };
+                    imageCache.set(
+                        resource.id,
+                        image
+                    );
 
 
-        image.onerror = () => {
-            reject(
-                new Error(
-                    `Não foi possível carregar ${resource.src}`
-                )
-            );
-        };
+                    resolve();
+                };
 
 
-        image.src = resource.src;
-    });
+            image.onerror =
+                () => {
+                    const fallback =
+                        new Image();
+
+
+                    fallback.onload =
+                        () => {
+                            imageCache.set(
+                                resource.id,
+                                fallback
+                            );
+
+
+                            resolve();
+                        };
+
+
+                    fallback.src =
+                        resource.id === CARD_BACK_ID
+                            ? fallbackBackImage()
+                            : placeholderImage(
+                                resource.letter || "?",
+                                "illustration",
+                                0
+                            );
+                };
+
+
+            image.src =
+                resource.src;
+        }
+    );
 }
 
 
 /* ==========================================================
-   PRÉ-CARREGAMENTO DOS 22 RECURSOS
+   PREPARAR OS RECURSOS DO JOGO
 ========================================================== */
 
 async function preloadAllResources() {
@@ -390,251 +727,330 @@ async function preloadAllResources() {
 
 
     loadingInProgress = true;
-    resourcesReady = false;
 
 
     imageCache.clear();
 
 
-    startButton.hidden = true;
-    startButton.disabled = true;
-
-    retryButton.hidden = true;
+    $("startButton").hidden =
+        true;
 
 
-    let nextResourceIndex = 0;
-    let completedResources = 0;
+    $("startButton").disabled =
+        true;
 
 
-    const errors = [];
+    let next = 0;
+    let done = 0;
 
 
-    updateLoadingProgress(0);
+    updateLoading(0);
 
-
-    /*
-        Cada trabalhador carrega uma imagem por vez.
-        Existem no máximo cinco trabalhadores simultâneos.
-    */
 
     async function worker() {
-        while (true) {
-            const currentIndex =
-                nextResourceIndex;
-
-
-            nextResourceIndex += 1;
-
-
-            if (
-                currentIndex >= RESOURCES.length
-            ) {
-                return;
-            }
-
-
+        while (
+            next < RESOURCES.length
+        ) {
             const resource =
-                RESOURCES[currentIndex];
+                RESOURCES[next++];
 
 
-            if (
+            $("loadingText").textContent =
                 resource.id === CARD_BACK_ID
-            ) {
-                loadingText.textContent =
-                    "Preparando o verso das cartas...";
-
-            } else if (
-                resource.id === BACKGROUND_ID
-            ) {
-                loadingText.textContent =
-                    "Preparando os traços decorativos do fundo...";
-
-            } else {
-                loadingText.textContent =
-                    `Preparando ${resource.id}...`;
-            }
+                    ? "Preparando a capa das cartas..."
+                    : `Preparando ${resource.id}...`;
 
 
-            try {
-                await loadAndDecodeImage(
-                    resource
-                );
-
-            } catch (error) {
-                errors.push(error);
-
-            } finally {
-                completedResources += 1;
+            await loadImage(resource);
 
 
-                updateLoadingProgress(
-                    completedResources
-                );
-            }
+            done += 1;
+
+
+            updateLoading(done);
         }
     }
 
 
-    const workers = Array.from(
-        {
-            length: Math.min(
-                MAX_SIMULTANEOUS_LOADS,
-                RESOURCES.length
-            )
-        },
+    await Promise.all(
+        Array.from(
+            {
+                length: Math.min(
+                    MAX_SIMULTANEOUS_LOADS,
+                    RESOURCES.length
+                )
+            },
 
-        () => worker()
+            worker
+        )
     );
 
 
-    await Promise.all(workers);
+    loadingInProgress =
+        false;
 
 
-    loadingInProgress = false;
+    resourcesReady =
+        true;
 
 
-    if (
-        errors.length > 0 ||
-        imageCache.size !== RESOURCES.length
+    $("loadingText").textContent =
+        "As cartas provisórias estão prontas para a partida.";
+
+
+    $("startButton").hidden =
+        false;
+
+
+    $("startButton").disabled =
+        false;
+
+
+    refreshInitialPreview(false);
+
+
+    registerServiceWorker();
+}
+
+
+/* ==========================================================
+   ATUALIZAR CARREGAMENTO
+========================================================== */
+
+function updateLoading(done) {
+    const percent =
+        Math.round(
+            (
+                done /
+                RESOURCES.length
+            ) * 100
+        );
+
+
+    $("loadingPercentage").textContent =
+        `${percent}%`;
+
+
+    $("loadingCounter").textContent =
+        `${done} de ${RESOURCES.length} recursos preparados`;
+
+
+    $("loadingBar").style.width =
+        `${percent}%`;
+
+
+    $("loadingTrack").setAttribute(
+        "aria-valuenow",
+        String(done)
+    );
+}
+
+
+/* ==========================================================
+   EMBARALHAMENTO
+========================================================== */
+
+function shuffle(items) {
+    const result =
+        [...items];
+
+
+    for (
+        let index =
+            result.length - 1;
+
+        index > 0;
+
+        index -= 1
     ) {
-        loadingText.textContent =
-            "Algumas imagens não foram encontradas. Verifique a pasta imagens.";
+        const randomIndex =
+            Math.floor(
+                Math.random() *
+                (index + 1)
+            );
 
 
-        loadingCounter.textContent =
-            `${imageCache.size} de ` +
-            `${RESOURCES.length} recursos disponíveis`;
+        [
+            result[index],
+            result[randomIndex]
+        ] = [
+            result[randomIndex],
+            result[index]
+        ];
+    }
 
 
-        retryButton.hidden = false;
+    return result;
+}
 
 
+/* ==========================================================
+   ALTERAR AS TRÊS CARTAS DA ABERTURA
+========================================================== */
+
+function refreshInitialPreview(
+    animate = true
+) {
+    if (!resourcesReady) {
         return;
     }
 
 
-    finishLoading();
+    const choices =
+        shuffle(
+            CARDS.filter(
+                (card) =>
+                    card.type === "illustration"
+            )
+        ).slice(0, 3);
+
+
+    if (animate) {
+        previewCards.forEach(
+            (card) => {
+                card.classList.add(
+                    "preview-changing"
+                );
+            }
+        );
+    }
+
+
+    window.setTimeout(
+        () => {
+            choices.forEach(
+                (card, index) => {
+                    const cached =
+                        imageCache.get(
+                            card.id
+                        );
+
+
+                    previewImages[index].src =
+                        cached.currentSrc ||
+                        cached.src;
+
+
+                    previewImages[index].alt =
+                        `Carta provisória ${card.letter}`;
+                }
+            );
+
+
+            previewCards.forEach(
+                (card) => {
+                    card.classList.remove(
+                        "preview-changing"
+                    );
+                }
+            );
+        },
+
+        animate ? 250 : 0
+    );
 }
 
 
 /* ==========================================================
-   BARRA DE CARREGAMENTO
+   CLONAR IMAGEM DA MEMÓRIA
 ========================================================== */
 
-function updateLoadingProgress(
-    completedResources
+function cloneCachedImage(
+    id,
+    alt
 ) {
-    const percentage = Math.round(
-        (
-            completedResources /
-            RESOURCES.length
-        ) * 100
-    );
+    const original =
+        imageCache.get(id);
 
 
-    loadingPercentage.textContent =
-        `${percentage}%`;
+    if (!original) {
+        throw new Error(
+            `Imagem ${id} indisponível.`
+        );
+    }
 
 
-    loadingCounter.textContent =
-        `${completedResources} de ` +
-        `${RESOURCES.length} recursos preparados`;
+    const copy =
+        original.cloneNode(true);
 
 
-    loadingBar.style.width =
-        `${percentage}%`;
+    copy.alt =
+        alt;
 
 
-    loadingTrack.setAttribute(
-        "aria-valuenow",
-        String(completedResources)
-    );
+    copy.draggable =
+        false;
+
+
+    return copy;
 }
 
 
 /* ==========================================================
-   CONCLUSÃO DO CARREGAMENTO
+   EXIBIR SOMENTE UMA TELA
 ========================================================== */
 
-function finishLoading() {
-    resourcesReady = true;
+function showOnly(screen) {
+    [
+        initialScreen,
+        gameScreen,
+        meaningScreen
+    ].forEach(
+        (item) => {
+            item.hidden =
+                item !== screen;
 
 
-    loadingText.textContent =
-        "Todas as imagens estão carregadas e prontas para a partida.";
+            item.setAttribute(
+                "aria-hidden",
+                item === screen
+                    ? "false"
+                    : "true"
+            );
 
 
-    loadingPercentage.textContent =
-        "100%";
-
-
-    loadingCounter.textContent =
-        `${RESOURCES.length} de ` +
-        `${RESOURCES.length} recursos preparados`;
-
-
-    loadingBar.style.width =
-        "100%";
-
-
-    loadingTrack.setAttribute(
-        "aria-valuenow",
-        String(RESOURCES.length)
+            item.classList.remove(
+                "is-visible",
+                "is-leaving"
+            );
+        }
     );
 
 
-    startButton.disabled = false;
-    startButton.hidden = false;
-
-
-    registerServiceWorker();
-
-
-    window.setTimeout(() => {
-        startButton.focus();
-    }, 100);
+    if (
+        screen !== initialScreen
+    ) {
+        requestAnimationFrame(
+            () => {
+                screen.classList.add(
+                    "is-visible"
+                );
+            }
+        );
+    }
 }
 
 
 /* ==========================================================
-   ABRIR TELA DO JOGO
+   ABRIR O JOGO
 ========================================================== */
 
 function openGameScreen() {
-    if (
-        !resourcesReady ||
-        imageCache.size !== RESOURCES.length
-    ) {
+    if (!resourcesReady) {
         return;
     }
 
 
     closeResultModal();
 
+
     resetGameState();
+
 
     createBoard();
 
 
-    gameScreen.hidden = false;
-
-
-    gameScreen.setAttribute(
-        "aria-hidden",
-        "false"
-    );
-
-
-    window.requestAnimationFrame(() => {
-        gameScreen.classList.add(
-            "is-visible"
-        );
-    });
-
-
-    initialScreen.classList.add(
-        "is-leaving"
-    );
+    showOnly(gameScreen);
 
 
     document.body.classList.remove(
@@ -642,21 +1058,10 @@ function openGameScreen() {
     );
 
 
-    window.setTimeout(() => {
-        initialScreen.hidden = true;
-
-
-        window.scrollTo({
-            top: 0,
-            behavior: "auto"
-        });
-
-
-        memoryGrid
-            .querySelector(".memory-card")
-            ?.focus();
-
-    }, 450);
+    window.scrollTo({
+        top: 0,
+        behavior: "auto"
+    });
 }
 
 
@@ -667,29 +1072,11 @@ function openGameScreen() {
 function returnToInitialScreen() {
     stopTimer();
 
+
     closeResultModal();
 
 
-    gameScreen.classList.remove(
-        "is-visible"
-    );
-
-
-    gameScreen.hidden = true;
-
-
-    gameScreen.setAttribute(
-        "aria-hidden",
-        "true"
-    );
-
-
-    initialScreen.hidden = false;
-
-
-    initialScreen.classList.remove(
-        "is-leaving"
-    );
+    showOnly(initialScreen);
 
 
     document.body.classList.add(
@@ -697,176 +1084,86 @@ function returnToInitialScreen() {
     );
 
 
-    loadingText.textContent =
-        "Todas as imagens continuam prontas na memória do navegador.";
+    $("loadingText").textContent =
+        "As cartas provisórias continuam prontas na memória do navegador.";
 
 
-    loadingPercentage.textContent =
-        "100%";
-
-
-    loadingCounter.textContent =
-        `${RESOURCES.length} de ` +
-        `${RESOURCES.length} recursos preparados`;
-
-
-    window.setTimeout(() => {
-        startButton.focus();
-    }, 60);
+    refreshInitialPreview(true);
 }
 
 
 /* ==========================================================
-   EMBARALHAMENTO
-========================================================== */
-
-function shuffle(items) {
-    const shuffledItems = [...items];
-
-
-    for (
-        let index = shuffledItems.length - 1;
-        index > 0;
-        index -= 1
-    ) {
-        const randomIndex =
-            Math.floor(
-                Math.random() * (index + 1)
-            );
-
-
-        [
-            shuffledItems[index],
-            shuffledItems[randomIndex]
-        ] = [
-            shuffledItems[randomIndex],
-            shuffledItems[index]
-        ];
-    }
-
-
-    return shuffledItems;
-}
-
-
-/* ==========================================================
-   CLONAR IMAGEM ARMAZENADA NA MEMÓRIA
-========================================================== */
-
-function cloneCachedImage(
-    resourceId,
-    altText
-) {
-    const cachedImage =
-        imageCache.get(resourceId);
-
-
-    if (!cachedImage) {
-        throw new Error(
-            `A imagem ${resourceId} não está disponível no cache.`
-        );
-    }
-
-
-    const imageCopy =
-        cachedImage.cloneNode(true);
-
-
-    imageCopy.alt =
-        altText;
-
-
-    imageCopy.draggable =
-        false;
-
-
-    imageCopy.loading =
-        "eager";
-
-
-    imageCopy.decoding =
-        "sync";
-
-
-    return imageCopy;
-}
-
-
-/* ==========================================================
-   CRIAÇÃO DO TABULEIRO
+   CRIAR TABULEIRO
 ========================================================== */
 
 function createBoard() {
-    memoryGrid.innerHTML = "";
+    const grid =
+        $("memoryGrid");
 
 
-    const boardFragment =
+    grid.innerHTML =
+        "";
+
+
+    const fragment =
         document.createDocumentFragment();
 
 
-    const shuffledCards =
-        shuffle(CARDS);
-
-
-    shuffledCards.forEach(
+    shuffle(CARDS).forEach(
         (cardData, index) => {
-            const cardButton =
-                document.createElement("button");
+            const button =
+                document.createElement(
+                    "button"
+                );
 
 
-            cardButton.type =
+            button.type =
                 "button";
 
 
-            cardButton.className =
-                `memory-card ${cardData.type}-card`;
+            button.className =
+                "memory-card provisional-card";
 
 
-            cardButton.dataset.id =
+            button.dataset.id =
                 cardData.id;
 
 
-            cardButton.dataset.pair =
+            button.dataset.pair =
                 String(cardData.pair);
 
 
-            cardButton.setAttribute(
+            button.dataset.letter =
+                cardData.letter;
+
+
+            button.setAttribute(
                 "aria-label",
                 `Carta ${index + 1}, fechada`
             );
 
 
-            /*
-                Estrutura interna da carta.
-            */
-
-            const cardInner =
-                document.createElement("span");
+            const inner =
+                document.createElement(
+                    "span"
+                );
 
 
-            cardInner.className =
+            inner.className =
                 "memory-card-inner";
 
 
-            /*
-                Verso da carta.
-            */
-
-            const cardBack =
-                document.createElement("span");
+            const back =
+                document.createElement(
+                    "span"
+                );
 
 
-            cardBack.className =
+            back.className =
                 "memory-card-face memory-card-back";
 
 
-            cardBack.setAttribute(
-                "aria-hidden",
-                "true"
-            );
-
-
-            cardBack.appendChild(
+            back.appendChild(
                 cloneCachedImage(
                     CARD_BACK_ID,
                     ""
@@ -874,19 +1171,17 @@ function createBoard() {
             );
 
 
-            /*
-                Frente da carta.
-            */
-
-            const cardFront =
-                document.createElement("span");
+            const front =
+                document.createElement(
+                    "span"
+                );
 
 
-            cardFront.className =
+            front.className =
                 "memory-card-face memory-card-front";
 
 
-            cardFront.appendChild(
+            front.appendChild(
                 cloneCachedImage(
                     cardData.id,
                     cardData.alt
@@ -894,39 +1189,34 @@ function createBoard() {
             );
 
 
-            cardInner.append(
-                cardBack,
-                cardFront
+            inner.append(
+                back,
+                front
             );
 
 
-            cardButton.appendChild(
-                cardInner
+            button.appendChild(
+                inner
             );
 
 
-            cardButton.addEventListener(
+            button.addEventListener(
                 "click",
+
                 () => {
-                    flipCard(cardButton);
+                    flipCard(button);
                 }
             );
 
 
-            boardFragment.appendChild(
-                cardButton
+            fragment.appendChild(
+                button
             );
         }
     );
 
 
-    /*
-        Insere todas as cartas em uma única operação.
-    */
-
-    memoryGrid.appendChild(
-        boardFragment
-    );
+    grid.appendChild(fragment);
 }
 
 
@@ -934,23 +1224,11 @@ function createBoard() {
    VIRAR CARTA
 ========================================================== */
 
-function flipCard(selectedCard) {
-    const isAlreadyFlipped =
-        selectedCard.classList.contains(
-            "is-flipped"
-        );
-
-
-    const isAlreadyMatched =
-        selectedCard.classList.contains(
-            "is-matched"
-        );
-
-
+function flipCard(card) {
     if (
         boardLocked ||
-        isAlreadyFlipped ||
-        isAlreadyMatched
+        card.classList.contains("is-flipped") ||
+        card.classList.contains("is-matched")
     ) {
         return;
     }
@@ -959,22 +1237,17 @@ function flipCard(selectedCard) {
     startTimer();
 
 
-    selectedCard.classList.add(
+    card.classList.add(
         "is-flipped"
     );
 
 
-    selectedCard.setAttribute(
-        "aria-label",
-        `Carta aberta: ${selectedCard.dataset.id}`
-    );
-
-
     if (!firstCard) {
-        firstCard = selectedCard;
+        firstCard =
+            card;
 
 
-        gameInstruction.textContent =
+        $("gameInstruction").textContent =
             "Agora selecione a segunda carta.";
 
 
@@ -982,37 +1255,25 @@ function flipCard(selectedCard) {
     }
 
 
-    secondCard = selectedCard;
+    secondCard =
+        card;
 
 
     moves += 1;
 
 
-    updateStatusPanel();
+    updateStatus();
 
 
-    checkSelectedPair();
-}
-
-
-/* ==========================================================
-   VERIFICAR PAR
-========================================================== */
-
-function checkSelectedPair() {
-    const cardsMatch =
+    if (
         firstCard.dataset.pair ===
-        secondCard.dataset.pair;
+        secondCard.dataset.pair
+    ) {
+        registerMatch();
 
-
-    if (cardsMatch) {
-        registerMatchedPair();
-
-        return;
+    } else {
+        hideWrongCards();
     }
-
-
-    hideIncorrectCards();
 }
 
 
@@ -1020,66 +1281,64 @@ function checkSelectedPair() {
    PAR ENCONTRADO
 ========================================================== */
 
-function registerMatchedPair() {
-    boardLocked = true;
+function registerMatch() {
+    boardLocked =
+        true;
 
 
-    firstCard.classList.add(
-        "is-matched"
-    );
+    const letter =
+        firstCard.dataset.letter;
 
 
-    secondCard.classList.add(
-        "is-matched"
-    );
+    [
+        firstCard,
+        secondCard
+    ].forEach(
+        (card) => {
+            card.classList.add(
+                "is-matched"
+            );
 
 
-    firstCard.disabled = true;
-    secondCard.disabled = true;
-
-
-    firstCard.setAttribute(
-        "aria-label",
-        "Carta encontrada"
-    );
-
-
-    secondCard.setAttribute(
-        "aria-label",
-        "Carta encontrada"
+            card.disabled =
+                true;
+        }
     );
 
 
     matchedPairs += 1;
 
 
-    updateStatusPanel();
+    updateStatus();
 
 
-    gameInstruction.textContent =
-        "Muito bem! Você encontrou um par.";
+    $("gameInstruction").textContent =
+        `Muito bem! Você encontrou o par ${letter}.`;
 
 
-    window.setTimeout(() => {
-        clearSelectedCards();
+    window.setTimeout(
+        () => {
+            clearSelection();
 
 
-        boardLocked = false;
+            boardLocked =
+                false;
 
 
-        if (
-            matchedPairs === TOTAL_PAIRS
-        ) {
-            finishGame();
+            if (
+                matchedPairs ===
+                TOTAL_PAIRS
+            ) {
+                finishGame();
 
-            return;
-        }
+            } else {
+                $("gameInstruction").textContent =
+                    "Continue procurando os pares restantes.";
+            }
+        },
 
-
-        gameInstruction.textContent =
-            "Continue procurando os pares restantes.";
-
-    }, 620);
+        620
+    );
 }
 
 
@@ -1087,8 +1346,9 @@ function registerMatchedPair() {
    PAR INCORRETO
 ========================================================== */
 
-function hideIncorrectCards() {
-    boardLocked = true;
+function hideWrongCards() {
+    boardLocked =
+        true;
 
 
     firstCard.classList.add(
@@ -1101,53 +1361,41 @@ function hideIncorrectCards() {
     );
 
 
-    gameInstruction.textContent =
-        "As cartas não formam um par. Observe novamente.";
+    $("gameInstruction").textContent =
+        "As letras não formam um par. Observe novamente.";
 
 
-    window.setTimeout(() => {
-        firstCard.classList.remove(
-            "is-flipped",
-            "is-wrong"
-        );
+    window.setTimeout(
+        () => {
+            firstCard.classList.remove(
+                "is-flipped",
+                "is-wrong"
+            );
 
 
-        secondCard.classList.remove(
-            "is-flipped",
-            "is-wrong"
-        );
+            secondCard.classList.remove(
+                "is-flipped",
+                "is-wrong"
+            );
 
 
-        firstCard.setAttribute(
-            "aria-label",
-            "Carta fechada"
-        );
+            clearSelection();
 
 
-        secondCard.setAttribute(
-            "aria-label",
-            "Carta fechada"
-        );
+            boardLocked =
+                false;
 
 
-        clearSelectedCards();
+            $("gameInstruction").textContent =
+                "Selecione duas novas cartas.";
+        },
 
-
-        boardLocked = false;
-
-
-        gameInstruction.textContent =
-            "Selecione duas novas cartas.";
-
-    }, 980);
+        980
+    );
 }
 
 
-/* ==========================================================
-   LIMPAR CARTAS SELECIONADAS
-========================================================== */
-
-function clearSelectedCards() {
+function clearSelection() {
     firstCard = null;
     secondCard = null;
 }
@@ -1163,18 +1411,24 @@ function startTimer() {
     }
 
 
-    timerStarted = true;
+    timerStarted =
+        true;
 
 
     timerInterval =
-        window.setInterval(() => {
-            elapsedSeconds += 1;
+        window.setInterval(
+            () => {
+                elapsedSeconds += 1;
 
 
-            timer.textContent =
-                formatTime(elapsedSeconds);
+                $("timer").textContent =
+                    formatTime(
+                        elapsedSeconds
+                    );
+            },
 
-        }, 1000);
+            1000
+        );
 }
 
 
@@ -1188,54 +1442,54 @@ function stopTimer() {
     }
 
 
-    timerInterval = null;
-    timerStarted = false;
+    timerInterval =
+        null;
+
+
+    timerStarted =
+        false;
 }
 
 
-function formatTime(totalSeconds) {
+function formatTime(seconds) {
     const minutes =
         Math.floor(
-            totalSeconds / 60
+            seconds / 60
         );
 
 
-    const seconds =
-        totalSeconds % 60;
+    const remainingSeconds =
+        seconds % 60;
 
 
     return (
         `${String(minutes).padStart(2, "0")}:` +
-        `${String(seconds).padStart(2, "0")}`
+        `${String(remainingSeconds).padStart(2, "0")}`
     );
 }
 
 
 /* ==========================================================
-   ATUALIZAR PAINEL
+   ATUALIZAR INFORMAÇÕES
 ========================================================== */
 
-function updateStatusPanel() {
-    movesCounter.textContent =
+function updateStatus() {
+    $("movesCounter").textContent =
         String(moves);
 
 
-    pairsCounter.textContent =
+    $("pairsCounter").textContent =
         String(matchedPairs);
 
 
-    const progressPercentage =
-        (
+    $("pairsProgressBar").style.width =
+        `${(
             matchedPairs /
             TOTAL_PAIRS
-        ) * 100;
+        ) * 100}%`;
 
 
-    pairsProgressBar.style.width =
-        `${progressPercentage}%`;
-
-
-    pairsProgress.setAttribute(
+    $("pairsProgress").setAttribute(
         "aria-valuenow",
         String(matchedPairs)
     );
@@ -1250,44 +1504,58 @@ function resetGameState() {
     stopTimer();
 
 
-    firstCard = null;
-    secondCard = null;
+    firstCard =
+        null;
 
 
-    boardLocked = false;
+    secondCard =
+        null;
 
 
-    moves = 0;
-    matchedPairs = 0;
+    boardLocked =
+        false;
 
 
-    elapsedSeconds = 0;
+    moves =
+        0;
 
 
-    movesCounter.textContent =
+    matchedPairs =
+        0;
+
+
+    elapsedSeconds =
+        0;
+
+
+    $("movesCounter").textContent =
         "0";
 
 
-    timer.textContent =
+    $("timer").textContent =
         "00:00";
 
 
-    pairsCounter.textContent =
+    $("pairsCounter").textContent =
         "0";
 
 
-    pairsProgressBar.style.width =
+    $("pairsProgressBar").style.width =
         "0%";
 
 
-    pairsProgress.setAttribute(
+    $("pairsProgress").setAttribute(
         "aria-valuenow",
         "0"
     );
 
 
-    gameInstruction.textContent =
+    $("gameInstruction").textContent =
         "Selecione duas cartas para encontrar os pares correspondentes.";
+
+
+    $("completionPanel").hidden =
+        true;
 }
 
 
@@ -1305,15 +1573,18 @@ function restartGame() {
     createBoard();
 
 
+    showOnly(gameScreen);
+
+
+    document.body.classList.remove(
+        "page-locked"
+    );
+
+
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
-
-
-    memoryGrid
-        .querySelector(".memory-card")
-        ?.focus();
 }
 
 
@@ -1325,21 +1596,28 @@ function finishGame() {
     stopTimer();
 
 
-    finalMoves.textContent =
+    $("finalMoves").textContent =
         String(moves);
 
 
-    finalTime.textContent =
-        formatTime(elapsedSeconds);
+    $("finalTime").textContent =
+        formatTime(
+            elapsedSeconds
+        );
 
 
-    gameInstruction.textContent =
+    $("gameInstruction").textContent =
         "Parabéns! Todos os pares foram encontrados.";
 
 
-    window.setTimeout(() => {
-        openResultModal();
-    }, 560);
+    $("completionPanel").hidden =
+        false;
+
+
+    window.setTimeout(
+        openResultModal,
+        520
+    );
 }
 
 
@@ -1348,10 +1626,11 @@ function finishGame() {
 ========================================================== */
 
 function openResultModal() {
-    resultModal.hidden = false;
+    $("resultModal").hidden =
+        false;
 
 
-    resultModal.setAttribute(
+    $("resultModal").setAttribute(
         "aria-hidden",
         "false"
     );
@@ -1360,25 +1639,23 @@ function openResultModal() {
     document.body.classList.add(
         "page-locked"
     );
-
-
-    window.setTimeout(() => {
-        playAgainButton.focus();
-    }, 50);
 }
 
 
 function closeResultModal() {
-    resultModal.hidden = true;
+    $("resultModal").hidden =
+        true;
 
 
-    resultModal.setAttribute(
+    $("resultModal").setAttribute(
         "aria-hidden",
         "true"
     );
 
 
-    if (!initialScreen.hidden) {
+    if (
+        !initialScreen.hidden
+    ) {
         document.body.classList.add(
             "page-locked"
         );
@@ -1392,23 +1669,224 @@ function closeResultModal() {
 
 
 /* ==========================================================
-   CACHE OFFLINE
+   PRODUZIR A TELA DE SIGNIFICADOS
+========================================================== */
+
+function renderMeaningScreen() {
+    if (meaningRendered) {
+        return;
+    }
+
+
+    meaningRendered =
+        true;
+
+
+    const grid =
+        $("meaningGrid");
+
+
+    const fragment =
+        document.createDocumentFragment();
+
+
+    MEANINGS.forEach(
+        (item, index) => {
+            const card =
+                document.createElement(
+                    "article"
+                );
+
+
+            card.className =
+                "meaning-card";
+
+
+            card.innerHTML = `
+                <div class="meaning-images">
+
+                    <figure class="meaning-image-box symbol">
+
+                        <img
+                            src="${item.symbol}"
+                            alt="Símbolo ${item.name}"
+                            loading="lazy"
+                            decoding="async"
+                        />
+
+                        <figcaption class="meaning-image-label">
+                            SÍMBOLO
+                        </figcaption>
+
+                    </figure>
+
+
+                    <figure class="meaning-image-box">
+
+                        <img
+                            src="${item.illustration}"
+                            alt="Representação de ${item.translation}"
+                            loading="lazy"
+                            decoding="async"
+                        />
+
+                        <figcaption class="meaning-image-label">
+                            REPRESENTAÇÃO
+                        </figcaption>
+
+                    </figure>
+
+                </div>
+
+
+                <div class="meaning-body">
+
+                    <p class="meaning-number">
+                        ADINKRA ${String(
+                            index + 1
+                        ).padStart(2, "0")}
+                    </p>
+
+                    <h3>
+                        ${item.name}
+                    </h3>
+
+                    <p class="meaning-translation">
+                        “${item.translation}”
+                    </p>
+
+                    <p class="meaning-description">
+                        ${item.description}
+                    </p>
+
+                </div>
+            `;
+
+
+            card
+                .querySelectorAll("img")
+                .forEach(
+                    (image) => {
+                        image.addEventListener(
+                            "error",
+
+                            () => {
+                                const isSymbol =
+                                    Boolean(
+                                        image.closest(
+                                            ".symbol"
+                                        )
+                                    );
+
+
+                                image.src =
+                                    placeholderImage(
+                                        item.letter,
+
+                                        isSymbol
+                                            ? "symbol"
+                                            : "illustration",
+
+                                        item.pair - 1
+                                    );
+                            },
+
+                            {
+                                once: true
+                            }
+                        );
+                    }
+                );
+
+
+            fragment.appendChild(
+                card
+            );
+        }
+    );
+
+
+    grid.appendChild(
+        fragment
+    );
+}
+
+
+/* ==========================================================
+   ABRIR A TELA DE SIGNIFICADOS
+========================================================== */
+
+function openMeaningScreen() {
+    closeResultModal();
+
+
+    renderMeaningScreen();
+
+
+    showOnly(
+        meaningScreen
+    );
+
+
+    document.body.classList.remove(
+        "page-locked"
+    );
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+/* ==========================================================
+   VOLTAR AO JOGO CONCLUÍDO
+========================================================== */
+
+function backToCompletedGame() {
+    showOnly(
+        gameScreen
+    );
+
+
+    document.body.classList.remove(
+        "page-locked"
+    );
+
+
+    window.scrollTo({
+        top:
+            document.body.scrollHeight,
+
+        behavior:
+            "smooth"
+    });
+}
+
+
+/* ==========================================================
+   SERVICE WORKER
 ========================================================== */
 
 function registerServiceWorker() {
-    const isSupported =
-        "serviceWorker" in navigator;
-
-
-    const canRegister =
-        window.location.protocol === "https:" ||
-        window.location.hostname === "localhost" ||
-        window.location.hostname === "127.0.0.1";
+    if (
+        !(
+            "serviceWorker" in
+            navigator
+        )
+    ) {
+        return;
+    }
 
 
     if (
-        !isSupported ||
-        !canRegister
+        ![
+            "https:",
+            "http:"
+        ].includes(
+            window.location.protocol
+        )
     ) {
         return;
     }
@@ -1416,12 +1894,14 @@ function registerServiceWorker() {
 
     navigator.serviceWorker
         .register("sw.js")
-        .catch(() => {
-            /*
-                O jogo continua funcionando normalmente
-                mesmo sem o Service Worker.
-            */
-        });
+        .catch(
+            () => {
+                /*
+                    O jogo funciona mesmo
+                    sem o Service Worker.
+                */
+            }
+        );
 }
 
 
@@ -1429,48 +1909,73 @@ function registerServiceWorker() {
    EVENTOS
 ========================================================== */
 
-startButton.addEventListener(
+$("startButton").addEventListener(
     "click",
     openGameScreen
 );
 
 
-retryButton.addEventListener(
-    "click",
-    preloadAllResources
-);
-
-
-restartButton.addEventListener(
+$("restartButton").addEventListener(
     "click",
     restartGame
 );
 
 
-homeButton.addEventListener(
+$("homeButton").addEventListener(
     "click",
     returnToInitialScreen
 );
 
 
-playAgainButton.addEventListener(
+$("accessMeaningButton").addEventListener(
+    "click",
+    openMeaningScreen
+);
+
+
+$("modalMeaningButton").addEventListener(
+    "click",
+    openMeaningScreen
+);
+
+
+$("playAgainButton").addEventListener(
     "click",
     restartGame
 );
 
 
-modalHomeButton.addEventListener(
+$("modalHomeButton").addEventListener(
     "click",
     returnToInitialScreen
+);
+
+
+$("backToGameButton").addEventListener(
+    "click",
+    backToCompletedGame
+);
+
+
+$("meaningHomeButton").addEventListener(
+    "click",
+    returnToInitialScreen
+);
+
+
+$("meaningPlayAgainButton").addEventListener(
+    "click",
+    restartGame
 );
 
 
 document.addEventListener(
     "keydown",
+
     (event) => {
         if (
             event.key === "Escape" &&
-            !resultModal.hidden
+            !$("resultModal").hidden
         ) {
             closeResultModal();
         }

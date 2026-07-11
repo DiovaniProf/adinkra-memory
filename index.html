@@ -20,20 +20,21 @@
 
     <title>Jogo da Memória com Adinkras</title>
 
-    <!-- Carregamento antecipado da arte do verso das cartas -->
     <link
         rel="preload"
-        href="imagens/verso-adinkra.webp"
+        href="imagens/capa.png"
         as="image"
-        type="image/webp"
     />
 
-    <!-- Carregamento antecipado dos traços decorativos do fundo -->
     <link
-        rel="preload"
-        href="imagens/fundo-tracos-adinkra.webp"
-        as="image"
-        type="image/webp"
+        rel="preconnect"
+        href="https://i.postimg.cc"
+        crossorigin
+    />
+
+    <link
+        rel="dns-prefetch"
+        href="//i.postimg.cc"
     />
 
     <link rel="stylesheet" href="style.css" />
@@ -44,18 +45,19 @@
     <main class="app">
 
         <!-- =========================================
-             TELA INICIAL
+             TELA 1 — ABERTURA
         ========================================== -->
         <section
             id="initialScreen"
             class="screen initial-screen"
             aria-labelledby="initialTitle"
         >
+
             <div class="initial-container">
 
                 <div class="initial-copy">
 
-                    <p class="initial-label">
+                    <p class="eyebrow">
                         EXPERIÊNCIA EDUCATIVA
                     </p>
 
@@ -66,7 +68,7 @@
 
                     <div class="introductory-content">
 
-                        <p class="introductory-text">
+                        <p>
                             As Adinkras são símbolos visuais ligados aos povos Akan,
                             especialmente aos Asante, em Gana. Elas representam ideias,
                             valores, provérbios e ensinamentos transmitidos entre gerações.
@@ -86,13 +88,14 @@
 
                     <div
                         class="preview-cards"
-                        aria-hidden="true"
+                        aria-label="Prévia das cartas provisórias"
                     >
 
                         <div class="preview-card preview-card-left">
 
                             <img
-                                src="imagens/verso-adinkra.webp"
+                                id="previewImage1"
+                                src="imagens/capa.png"
                                 alt=""
                                 width="960"
                                 height="540"
@@ -104,7 +107,8 @@
                         <div class="preview-card preview-card-middle">
 
                             <img
-                                src="imagens/verso-adinkra.webp"
+                                id="previewImage2"
+                                src="imagens/capa.png"
                                 alt=""
                                 width="960"
                                 height="540"
@@ -116,7 +120,8 @@
                         <div class="preview-card preview-card-right">
 
                             <img
-                                src="imagens/verso-adinkra.webp"
+                                id="previewImage3"
+                                src="imagens/capa.png"
                                 alt=""
                                 width="960"
                                 height="540"
@@ -128,7 +133,6 @@
 
 
                     <div
-                        id="loadingPanel"
                         class="loading-panel"
                         aria-live="polite"
                     >
@@ -136,7 +140,7 @@
                         <div class="loading-row">
 
                             <p id="loadingText">
-                                Preparando as imagens do jogo...
+                                Preparando as cartas provisórias...
                             </p>
 
                             <strong id="loadingPercentage">
@@ -150,9 +154,9 @@
                             id="loadingTrack"
                             class="loading-track"
                             role="progressbar"
-                            aria-label="Carregamento das imagens"
+                            aria-label="Preparação das cartas"
                             aria-valuemin="0"
-                            aria-valuemax="22"
+                            aria-valuemax="21"
                             aria-valuenow="0"
                         >
                             <span id="loadingBar"></span>
@@ -161,9 +165,23 @@
 
                         <p
                             id="loadingCounter"
-                            class="preview-information"
+                            class="loading-counter"
                         >
-                            0 de 22 recursos preparados
+                            0 de 21 recursos preparados
+                        </p>
+
+                    </div>
+
+
+                    <div class="temporary-mode">
+
+                        <span aria-hidden="true">
+                            ◈
+                        </span>
+
+                        <p>
+                            Modo provisório: as faces do jogo
+                            utilizam letras de A a J.
                         </p>
 
                     </div>
@@ -187,6 +205,9 @@
                         class="secondary-button retry-button"
                         type="button"
                         hidden
+                        disabled
+                        aria-hidden="true"
+                        tabindex="-1"
                     >
                         TENTAR CARREGAR NOVAMENTE
                     </button>
@@ -194,11 +215,12 @@
                 </div>
 
             </div>
+
         </section>
 
 
         <!-- =========================================
-             TELA DO JOGO
+             TELA 2 — JOGO
         ========================================== -->
         <section
             id="gameScreen"
@@ -210,9 +232,9 @@
 
             <header class="game-header">
 
-                <div class="game-title-area">
+                <div>
 
-                    <p class="game-eyebrow">
+                    <p class="eyebrow">
                         ENCONTRE OS 10 PARES
                     </p>
 
@@ -258,7 +280,7 @@
 
                 <article class="status-card">
 
-                    <span class="status-label">
+                    <span>
                         Jogadas
                     </span>
 
@@ -271,7 +293,7 @@
 
                 <article class="status-card">
 
-                    <span class="status-label">
+                    <span>
                         Tempo
                     </span>
 
@@ -284,7 +306,7 @@
 
                 <article class="status-card">
 
-                    <span class="status-label">
+                    <span>
                         Pares encontrados
                     </span>
 
@@ -295,12 +317,11 @@
                 </article>
 
 
-                <article class="status-card status-progress-card">
+                <article class="status-card">
 
-                    <span class="status-label">
+                    <span>
                         Progresso
                     </span>
-
 
                     <div
                         id="pairsProgress"
@@ -329,7 +350,8 @@
                 class="game-instruction"
                 aria-live="polite"
             >
-                Selecione duas cartas para encontrar os pares correspondentes.
+                Selecione duas cartas para encontrar
+                os pares correspondentes.
             </p>
 
 
@@ -340,6 +362,120 @@
             >
                 <!-- Cartas produzidas pelo JavaScript -->
             </section>
+
+
+            <section
+                id="completionPanel"
+                class="completion-panel"
+                hidden
+            >
+
+                <div>
+
+                    <p class="eyebrow">
+                        TODOS OS PARES ENCONTRADOS
+                    </p>
+
+                    <h3>
+                        Agora descubra o significado
+                        de cada Adinkra.
+                    </h3>
+
+                </div>
+
+
+                <button
+                    id="accessMeaningButton"
+                    class="meaning-button"
+                    type="button"
+                >
+                    ACESSAR SIGNIFICADOS
+                </button>
+
+            </section>
+
+        </section>
+
+
+        <!-- =========================================
+             TELA 3 — SIGNIFICADOS
+        ========================================== -->
+        <section
+            id="meaningScreen"
+            class="screen meaning-screen"
+            aria-labelledby="meaningTitle"
+            aria-hidden="true"
+            hidden
+        >
+
+            <header class="meaning-header">
+
+                <div>
+
+                    <p class="eyebrow">
+                        CONHEÇA OS SÍMBOLOS
+                    </p>
+
+                    <h2 id="meaningTitle">
+                        SIGNIFICADOS DAS ADINKRAS
+                    </h2>
+
+                    <p class="meaning-subtitle">
+                        Observe o símbolo, sua representação visual
+                        e o ensinamento associado.
+                    </p>
+
+                </div>
+
+
+                <div class="meaning-controls">
+
+                    <button
+                        id="backToGameButton"
+                        class="control-button"
+                        type="button"
+                    >
+                        <span aria-hidden="true">←</span>
+
+                        Voltar ao jogo
+                    </button>
+
+
+                    <button
+                        id="meaningHomeButton"
+                        class="control-button"
+                        type="button"
+                    >
+                        <span aria-hidden="true">⌂</span>
+
+                        Tela inicial
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <section
+                id="meaningGrid"
+                class="meaning-grid"
+                aria-label="Significados das Adinkras"
+            >
+                <!-- Conteúdo produzido pelo JavaScript -->
+            </section>
+
+
+            <footer class="meaning-footer">
+
+                <button
+                    id="meaningPlayAgainButton"
+                    class="primary-button"
+                    type="button"
+                >
+                    JOGAR NOVAMENTE
+                </button>
+
+            </footer>
 
         </section>
 
@@ -372,7 +508,7 @@
             </div>
 
 
-            <p class="modal-label">
+            <p class="eyebrow">
                 EXPERIÊNCIA CONCLUÍDA
             </p>
 
@@ -383,13 +519,14 @@
 
 
             <p class="result-message">
-                Você encontrou todos os pares do Jogo da Memória com Adinkras.
+                Você encontrou todos os pares do
+                Jogo da Memória com Adinkras.
             </p>
 
 
             <div class="result-grid">
 
-                <article class="result-item">
+                <article>
 
                     <span>
                         Jogadas
@@ -402,7 +539,7 @@
                 </article>
 
 
-                <article class="result-item">
+                <article>
 
                     <span>
                         Tempo
@@ -418,6 +555,15 @@
 
 
             <div class="modal-actions">
+
+                <button
+                    id="modalMeaningButton"
+                    class="meaning-button"
+                    type="button"
+                >
+                    ACESSAR SIGNIFICADOS
+                </button>
+
 
                 <button
                     id="playAgainButton"
