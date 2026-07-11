@@ -1,1990 +1,598 @@
-"use strict";
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
 
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
 
-/* ==========================================================
-   CONFIGURAÇÕES
-========================================================== */
+    <meta
+        name="description"
+        content="Jogo da Memória com Adinkras"
+    />
 
-const TOTAL_PAIRS = 10;
+    <meta
+        name="theme-color"
+        content="#2b1208"
+    />
 
-const CARD_BACK_ID = "cardBack";
+    <title>Jogo da Memória com Adinkras</title>
 
-const CARD_BACK_PATH =
-    "imagens/capa.png";
+    <link rel="stylesheet" href="style.css" />
+</head>
 
-const MAX_SIMULTANEOUS_LOADS = 5;
+<body class="page-locked">
 
+    <main class="app">
 
-/* ==========================================================
-   CORES DAS CARTAS PROVISÓRIAS
-========================================================== */
-
-const PALETTES = [
-    ["#471608", "#a74317", "#f0a536"],
-    ["#17213f", "#305da8", "#6bbcf3"],
-    ["#371047", "#87399b", "#dc82e9"],
-    ["#12382b", "#278663", "#7addae"],
-    ["#4b161e", "#a52d45", "#f48192"],
-    ["#393006", "#a58a16", "#f4d757"],
-    ["#122f40", "#197c91", "#70d9e6"],
-    ["#38210f", "#a05a21", "#efb36a"],
-    ["#251847", "#6844a6", "#ad8bf1"],
-    ["#18360f", "#4c992e", "#9de26d"]
-];
-
-
-/* ==========================================================
-   PRODUÇÃO DAS CARTAS PROVISÓRIAS
-========================================================== */
-
-function placeholderImage(
-    letter,
-    type,
-    index
-) {
-    const [
-        dark,
-        medium,
-        light
-    ] = PALETTES[
-        index % PALETTES.length
-    ];
-
-
-    const label =
-        type === "symbol"
-            ? "SÍMBOLO"
-            : "IMAGEM";
-
-
-    const svg = `
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="960"
-            height="540"
-            viewBox="0 0 960 540"
+        <!-- ==================================================
+             TELA 1 — ABERTURA
+        =================================================== -->
+        <section
+            id="initialScreen"
+            class="screen initial-screen"
+            aria-labelledby="initialTitle"
         >
-            <defs>
-                <linearGradient
-                    id="gradient"
-                    x1="0"
-                    y1="0"
-                    x2="1"
-                    y2="1"
-                >
-                    <stop
-                        offset="0"
-                        stop-color="${dark}"
-                    />
 
-                    <stop
-                        offset="0.55"
-                        stop-color="${medium}"
-                    />
+            <div class="initial-container">
 
-                    <stop
-                        offset="1"
-                        stop-color="${light}"
-                    />
-                </linearGradient>
-            </defs>
+                <div class="initial-copy">
 
-            <rect
-                width="960"
-                height="540"
-                rx="38"
-                fill="url(#gradient)"
-            />
+                    <p class="eyebrow">
+                        EXPERIÊNCIA EDUCATIVA
+                    </p>
 
-            <rect
-                x="20"
-                y="20"
-                width="920"
-                height="500"
-                rx="29"
-                fill="none"
-                stroke="#ffe7a0"
-                stroke-width="5"
-                opacity="0.75"
-            />
+                    <h1 id="initialTitle">
+                        JOGO DA MEMÓRIA<br />
+                        <span>COM ADINKRAS</span>
+                    </h1>
 
-            <circle
-                cx="480"
-                cy="245"
-                r="150"
-                fill="#120805"
-                opacity="0.35"
-                stroke="#ffe7a0"
-                stroke-width="7"
-            />
+                    <div class="introductory-content">
 
-            <text
-                x="480"
-                y="315"
-                text-anchor="middle"
-                font-family="Arial"
-                font-size="210"
-                font-weight="900"
-                fill="#fff7dd"
-            >
-                ${letter}
-            </text>
+                        <p>
+                            As Adinkras são símbolos visuais ligados aos povos Akan,
+                            especialmente aos Asante, em Gana. Elas representam ideias,
+                            valores, provérbios e ensinamentos transmitidos entre gerações.
+                            Por isso, funcionam como uma importante forma de comunicação
+                            visual e cultural. No diálogo educativo, ajudam crianças e
+                            jovens a refletir sobre respeito, sabedoria e cooperação.
+                            Cada símbolo pode inspirar atitudes positivas para a
+                            convivência em comunidade.
+                        </p>
 
-            <rect
-                x="330"
-                y="427"
-                width="300"
-                height="58"
-                rx="29"
-                fill="#130906"
-                opacity="0.6"
-            />
-
-            <text
-                x="480"
-                y="466"
-                text-anchor="middle"
-                font-family="Arial"
-                font-size="26"
-                font-weight="800"
-                letter-spacing="7"
-                fill="#fff4cc"
-            >
-                ${label}
-            </text>
-        </svg>
-    `;
-
-
-    return (
-        "data:image/svg+xml;charset=UTF-8," +
-        encodeURIComponent(svg)
-    );
-}
-
-
-/* ==========================================================
-   CAPA PROVISÓRIA DE SEGURANÇA
-========================================================== */
-
-function fallbackBackImage() {
-    const svg = `
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="960"
-            height="540"
-        >
-            <defs>
-                <linearGradient
-                    id="gradient"
-                    x1="0"
-                    y1="0"
-                    x2="1"
-                    y2="1"
-                >
-                    <stop
-                        stop-color="#241006"
-                    />
-
-                    <stop
-                        offset="1"
-                        stop-color="#d27a22"
-                    />
-                </linearGradient>
-            </defs>
-
-            <rect
-                width="960"
-                height="540"
-                rx="36"
-                fill="url(#gradient)"
-            />
-
-            <rect
-                x="22"
-                y="22"
-                width="916"
-                height="496"
-                rx="28"
-                fill="none"
-                stroke="#f5c65f"
-                stroke-width="7"
-            />
-
-            <circle
-                cx="480"
-                cy="270"
-                r="145"
-                fill="#1a0b05"
-                opacity="0.58"
-                stroke="#ffe8a6"
-                stroke-width="8"
-            />
-
-            <text
-                x="480"
-                y="250"
-                text-anchor="middle"
-                font-family="Arial"
-                font-size="60"
-                font-weight="900"
-                fill="#f5c65f"
-            >
-                ADINKRA
-            </text>
-
-            <text
-                x="480"
-                y="340"
-                text-anchor="middle"
-                font-family="Arial"
-                font-size="80"
-                fill="#ffe8a6"
-            >
-                ◈
-            </text>
-        </svg>
-    `;
-
-
-    return (
-        "data:image/svg+xml;charset=UTF-8," +
-        encodeURIComponent(svg)
-    );
-}
-
-
-/* ==========================================================
-   DEFINIÇÃO DAS 20 CARTAS
-========================================================== */
-
-const CARD_DEFINITIONS =
-    Array.from(
-        { length: 10 },
-
-        (_, pairIndex) => {
-            const letter =
-                String.fromCharCode(
-                    65 + pairIndex
-                );
-
-
-            const pair =
-                pairIndex + 1;
-
-
-            return [
-                {
-                    id:
-                        `img${String(
-                            pairIndex * 2 + 1
-                        ).padStart(2, "0")}`,
-
-                    pair,
-                    letter,
-
-                    type: "symbol"
-                },
-
-                {
-                    id:
-                        `img${String(
-                            pairIndex * 2 + 2
-                        ).padStart(2, "0")}`,
-
-                    pair,
-                    letter,
-
-                    type: "illustration"
-                }
-            ];
-        }
-    ).flat();
-
-
-const CARDS =
-    CARD_DEFINITIONS.map(
-        (card) => ({
-            ...card,
-
-            src:
-                placeholderImage(
-                    card.letter,
-                    card.type,
-                    card.pair - 1
-                ),
-
-            alt:
-                `Carta provisória ${card.letter}, ` +
-                (
-                    card.type === "symbol"
-                        ? "símbolo"
-                        : "imagem"
-                )
-        })
-    );
-
-
-/* ==========================================================
-   RECURSOS DA TELA INICIAL
-========================================================== */
-
-const RESOURCES = [
-    ...CARDS.map(
-        (card) => ({
-            id: card.id,
-            src: card.src,
-            alt: card.alt,
-            letter: card.letter
-        })
-    ),
-
-    {
-        id: CARD_BACK_ID,
-
-        src:
-            CARD_BACK_PATH,
-
-        alt:
-            "Arte do verso das cartas"
-    }
-];
-
-
-/* ==========================================================
-   SIGNIFICADOS DAS ADINKRAS
-========================================================== */
-
-const MEANINGS = [
-    {
-        pair: 1,
-        letter: "A",
-
-        name:
-            "Sankofa",
-
-        translation:
-            "Volte e busque",
-
-        symbol:
-            "https://i.postimg.cc/2bqyhWvZ/img01.jpg",
-
-        illustration:
-            "https://i.postimg.cc/hJZhXsJn/img02.png",
-
-        description:
-            "Símbolo da importância de aprender com o passado. " +
-            "Essencialmente, toda experiência de vida deve torná-lo " +
-            "mais sábio; mesmo uma experiência ruim ensina como não proceder."
-    },
-
-    {
-        pair: 10,
-        letter: "J",
-
-        name:
-            "Denkyem",
-
-        translation:
-            "Crocodilo",
-
-        symbol:
-            "https://i.postimg.cc/MMcHVBRf/img19.jpg",
-
-        illustration:
-            "https://i.postimg.cc/94gzDb4z/img20.png",
-
-        description:
-            "Símbolo de adaptabilidade. O crocodilo vive na água, " +
-            "mas respira ar, demonstrando a capacidade de ajustar-se " +
-            "às circunstâncias."
-    },
-
-    {
-        pair: 9,
-        letter: "I",
-
-        name:
-            "Dwennimmen",
-
-        translation:
-            "Chifres de carneiro",
-
-        symbol:
-            "https://i.postimg.cc/R63hKtfn/img17.jpg",
-
-        illustration:
-            "https://i.postimg.cc/4K2nYPKT/img18.png",
-
-        description:
-            "Símbolo de humildade unida à força. O carneiro luta " +
-            "ferozmente contra um adversário, mas também se submete " +
-            "humildemente ao abate, enfatizando que até os fortes " +
-            "precisam ser humildes."
-    },
-
-    {
-        pair: 5,
-        letter: "E",
-
-        name:
-            "Nkonsonkonson",
-
-        translation:
-            "Elo de corrente",
-
-        symbol:
-            "https://i.postimg.cc/k6VGKS8V/img09.jpg",
-
-        illustration:
-            "https://i.postimg.cc/hJZhXsJg/img10.png",
-
-        description:
-            "Símbolo de unidade e relações humanas. Lembra a necessidade " +
-            "de contribuir para a comunidade e que, na união, há força. " +
-            "Representa o chamado à ação, a coragem, a determinação e a " +
-            "prontidão para enfrentar desafios."
-    },
-
-    {
-        pair: 2,
-        letter: "B",
-
-        name:
-            "Duafe",
-
-        translation:
-            "Pente de madeira",
-
-        symbol:
-            "https://i.postimg.cc/47KyVcty/img03.jpg",
-
-        illustration:
-            "https://i.postimg.cc/d7NDh67Y/img04.png",
-
-        description:
-            "Símbolo de beleza e limpeza; também de qualidades femininas " +
-            "como bondade, amor e cuidado."
-    },
-
-    {
-        pair: 8,
-        letter: "H",
-
-        name:
-            "Kete Pa",
-
-        translation:
-            "Boa cama",
-
-        symbol:
-            "https://i.postimg.cc/PLVNCyLm/img15.jpg",
-
-        illustration:
-            "https://i.postimg.cc/nsSMX2sc/img16.png",
-
-        description:
-            "Símbolo de um bom casamento e de um bom descanso."
-    },
-
-    {
-        pair: 6,
-        letter: "F",
-
-        name:
-            "Ananse Ntontan",
-
-        translation:
-            "Teia de aranha",
-
-        symbol:
-            "https://i.postimg.cc/06Xrzn67/img11.jpg",
-
-        illustration:
-            "https://i.postimg.cc/KKp41fKR/img12.png",
-
-        description:
-            "Símbolo de sabedoria, criatividade, inteligência, " +
-            "engenhosidade e poder criativo. Inspirado na Aranha, " +
-            "figura lendária do folclore africano, enfatiza pensamento " +
-            "estratégico, inovação e capacidade de adaptar-se e superar desafios."
-    },
-
-    {
-        pair: 7,
-        letter: "G",
-
-        name:
-            "Abe Dua",
-
-        translation:
-            "Palmeira",
-
-        symbol:
-            "https://i.postimg.cc/mcphPjcM/img13.jpg",
-
-        illustration:
-            "https://i.postimg.cc/WDYtd8Dz/img14.png",
-
-        description:
-            "Símbolo de riqueza e engenhosidade. Representa resistência, " +
-            "prosperidade e capacidade de prover para si e para os outros. " +
-            "Assim como toda parte da palmeira é útil, ensina recurso, " +
-            "força e sustentabilidade para superar desafios."
-    },
-
-    {
-        pair: 3,
-        letter: "C",
-
-        name:
-            "Fafanto",
-
-        translation:
-            "Borboleta",
-
-        symbol:
-            "https://i.postimg.cc/f3qkVC30/img05.jpg",
-
-        illustration:
-            "https://i.postimg.cc/QBYVFmBF/img06.png",
-
-        description:
-            "Símbolo de transformação e mudança. Representa beleza, " +
-            "graça e a natureza delicada da vida. Significa crescimento, " +
-            "transformação e a importância de acolher mudanças com " +
-            "resiliência e elegância."
-    },
-
-    {
-        pair: 4,
-        letter: "D",
-
-        name:
-            "Ohene Kyiniie",
-
-        translation:
-            "Guarda-chuva do rei",
-
-        symbol:
-            "https://i.postimg.cc/67bT8c7v/img07.jpg",
-
-        illustration:
-            "https://i.postimg.cc/gwtrxsw8/img08.png",
-
-        description:
-            "Símbolo de liderança e proteção."
-    }
-];
-
-
-/* ==========================================================
-   ELEMENTOS
-========================================================== */
-
-const $ =
-    (id) =>
-        document.getElementById(id);
-
-
-const initialScreen =
-    $("initialScreen");
-
-const gameScreen =
-    $("gameScreen");
-
-const meaningScreen =
-    $("meaningScreen");
-
-
-const previewImages = [
-    $("previewImage1"),
-    $("previewImage2"),
-    $("previewImage3")
-];
-
-
-const previewCards = [
-    ...document.querySelectorAll(
-        ".preview-card"
-    )
-];
-
-
-const imageCache =
-    new Map();
-
-
-/* ==========================================================
-   ESTADO
-========================================================== */
-
-let resourcesReady = false;
-let loadingInProgress = false;
-
-let firstCard = null;
-let secondCard = null;
-
-let boardLocked = false;
-
-let moves = 0;
-let matchedPairs = 0;
-
-let elapsedSeconds = 0;
-
-let timerInterval = null;
-let timerStarted = false;
-
-let meaningRendered = false;
-
-
-/* ==========================================================
-   CARREGAR UMA IMAGEM
-========================================================== */
-
-function loadImage(resource) {
-    return new Promise(
-        (resolve) => {
-            const image =
-                new Image();
-
-
-            image.alt =
-                resource.alt;
-
-
-            image.decoding =
-                "async";
-
-
-            image.onload =
-                async () => {
-                    try {
-                        await image.decode?.();
-
-                    } catch (error) {
-                        /*
-                            O evento load já confirma
-                            que a imagem pode ser usada.
-                        */
-                    }
-
-
-                    imageCache.set(
-                        resource.id,
-                        image
-                    );
-
-
-                    resolve();
-                };
-
-
-            image.onerror =
-                () => {
-                    const fallback =
-                        new Image();
-
-
-                    fallback.onload =
-                        () => {
-                            imageCache.set(
-                                resource.id,
-                                fallback
-                            );
-
-
-                            resolve();
-                        };
-
-
-                    fallback.src =
-                        resource.id === CARD_BACK_ID
-                            ? fallbackBackImage()
-                            : placeholderImage(
-                                resource.letter || "?",
-                                "illustration",
-                                0
-                            );
-                };
-
-
-            image.src =
-                resource.src;
-        }
-    );
-}
-
-
-/* ==========================================================
-   PREPARAR OS RECURSOS DO JOGO
-========================================================== */
-
-async function preloadAllResources() {
-    if (loadingInProgress) {
-        return;
-    }
-
-
-    loadingInProgress = true;
-
-
-    imageCache.clear();
-
-
-    $("startButton").hidden =
-        true;
-
-
-    $("startButton").disabled =
-        true;
-
-
-    let next = 0;
-    let done = 0;
-
-
-    updateLoading(0);
-
-
-    async function worker() {
-        while (
-            next < RESOURCES.length
-        ) {
-            const resource =
-                RESOURCES[next++];
-
-
-            $("loadingText").textContent =
-                resource.id === CARD_BACK_ID
-                    ? "Preparando a capa das cartas..."
-                    : `Preparando ${resource.id}...`;
-
-
-            await loadImage(resource);
-
-
-            done += 1;
-
-
-            updateLoading(done);
-        }
-    }
-
-
-    await Promise.all(
-        Array.from(
-            {
-                length: Math.min(
-                    MAX_SIMULTANEOUS_LOADS,
-                    RESOURCES.length
-                )
-            },
-
-            worker
-        )
-    );
-
-
-    loadingInProgress =
-        false;
-
-
-    resourcesReady =
-        true;
-
-
-    $("loadingText").textContent =
-        "As cartas provisórias estão prontas para a partida.";
-
-
-    $("startButton").hidden =
-        false;
-
-
-    $("startButton").disabled =
-        false;
-
-
-    refreshInitialPreview(false);
-
-
-    registerServiceWorker();
-}
-
-
-/* ==========================================================
-   ATUALIZAR CARREGAMENTO
-========================================================== */
-
-function updateLoading(done) {
-    const percent =
-        Math.round(
-            (
-                done /
-                RESOURCES.length
-            ) * 100
-        );
-
-
-    $("loadingPercentage").textContent =
-        `${percent}%`;
-
-
-    $("loadingCounter").textContent =
-        `${done} de ${RESOURCES.length} recursos preparados`;
-
-
-    $("loadingBar").style.width =
-        `${percent}%`;
-
-
-    $("loadingTrack").setAttribute(
-        "aria-valuenow",
-        String(done)
-    );
-}
-
-
-/* ==========================================================
-   EMBARALHAMENTO
-========================================================== */
-
-function shuffle(items) {
-    const result =
-        [...items];
-
-
-    for (
-        let index =
-            result.length - 1;
-
-        index > 0;
-
-        index -= 1
-    ) {
-        const randomIndex =
-            Math.floor(
-                Math.random() *
-                (index + 1)
-            );
-
-
-        [
-            result[index],
-            result[randomIndex]
-        ] = [
-            result[randomIndex],
-            result[index]
-        ];
-    }
-
-
-    return result;
-}
-
-
-/* ==========================================================
-   ALTERAR AS TRÊS CARTAS DA ABERTURA
-========================================================== */
-
-function refreshInitialPreview(
-    animate = true
-) {
-    if (!resourcesReady) {
-        return;
-    }
-
-
-    const choices =
-        shuffle(
-            CARDS.filter(
-                (card) =>
-                    card.type === "illustration"
-            )
-        ).slice(0, 3);
-
-
-    if (animate) {
-        previewCards.forEach(
-            (card) => {
-                card.classList.add(
-                    "preview-changing"
-                );
-            }
-        );
-    }
-
-
-    window.setTimeout(
-        () => {
-            choices.forEach(
-                (card, index) => {
-                    const cached =
-                        imageCache.get(
-                            card.id
-                        );
-
-
-                    previewImages[index].src =
-                        cached.currentSrc ||
-                        cached.src;
-
-
-                    previewImages[index].alt =
-                        `Carta provisória ${card.letter}`;
-                }
-            );
-
-
-            previewCards.forEach(
-                (card) => {
-                    card.classList.remove(
-                        "preview-changing"
-                    );
-                }
-            );
-        },
-
-        animate ? 250 : 0
-    );
-}
-
-
-/* ==========================================================
-   CLONAR IMAGEM DA MEMÓRIA
-========================================================== */
-
-function cloneCachedImage(
-    id,
-    alt
-) {
-    const original =
-        imageCache.get(id);
-
-
-    if (!original) {
-        throw new Error(
-            `Imagem ${id} indisponível.`
-        );
-    }
-
-
-    const copy =
-        original.cloneNode(true);
-
-
-    copy.alt =
-        alt;
-
-
-    copy.draggable =
-        false;
-
-
-    return copy;
-}
-
-
-/* ==========================================================
-   EXIBIR SOMENTE UMA TELA
-========================================================== */
-
-function showOnly(screen) {
-    [
-        initialScreen,
-        gameScreen,
-        meaningScreen
-    ].forEach(
-        (item) => {
-            item.hidden =
-                item !== screen;
-
-
-            item.setAttribute(
-                "aria-hidden",
-                item === screen
-                    ? "false"
-                    : "true"
-            );
-
-
-            item.classList.remove(
-                "is-visible",
-                "is-leaving"
-            );
-        }
-    );
-
-
-    if (
-        screen !== initialScreen
-    ) {
-        requestAnimationFrame(
-            () => {
-                screen.classList.add(
-                    "is-visible"
-                );
-            }
-        );
-    }
-}
-
-
-/* ==========================================================
-   ABRIR O JOGO
-========================================================== */
-
-function openGameScreen() {
-    if (!resourcesReady) {
-        return;
-    }
-
-
-    closeResultModal();
-
-
-    resetGameState();
-
-
-    createBoard();
-
-
-    showOnly(gameScreen);
-
-
-    document.body.classList.remove(
-        "page-locked"
-    );
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "auto"
-    });
-}
-
-
-/* ==========================================================
-   RETORNAR À TELA INICIAL
-========================================================== */
-
-function returnToInitialScreen() {
-    stopTimer();
-
-
-    closeResultModal();
-
-
-    showOnly(initialScreen);
-
-
-    document.body.classList.add(
-        "page-locked"
-    );
-
-
-    $("loadingText").textContent =
-        "As cartas provisórias continuam prontas na memória do navegador.";
-
-
-    refreshInitialPreview(true);
-}
-
-
-/* ==========================================================
-   CRIAR TABULEIRO
-========================================================== */
-
-function createBoard() {
-    const grid =
-        $("memoryGrid");
-
-
-    grid.innerHTML =
-        "";
-
-
-    const fragment =
-        document.createDocumentFragment();
-
-
-    shuffle(CARDS).forEach(
-        (cardData, index) => {
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-
-            button.type =
-                "button";
-
-
-            button.className =
-                "memory-card provisional-card";
-
-
-            button.dataset.id =
-                cardData.id;
-
-
-            button.dataset.pair =
-                String(cardData.pair);
-
-
-            button.dataset.letter =
-                cardData.letter;
-
-
-            button.setAttribute(
-                "aria-label",
-                `Carta ${index + 1}, fechada`
-            );
-
-
-            const inner =
-                document.createElement(
-                    "span"
-                );
-
-
-            inner.className =
-                "memory-card-inner";
-
-
-            const back =
-                document.createElement(
-                    "span"
-                );
-
-
-            back.className =
-                "memory-card-face memory-card-back";
-
-
-            back.appendChild(
-                cloneCachedImage(
-                    CARD_BACK_ID,
-                    ""
-                )
-            );
-
-
-            const front =
-                document.createElement(
-                    "span"
-                );
-
-
-            front.className =
-                "memory-card-face memory-card-front";
-
-
-            front.appendChild(
-                cloneCachedImage(
-                    cardData.id,
-                    cardData.alt
-                )
-            );
-
-
-            inner.append(
-                back,
-                front
-            );
-
-
-            button.appendChild(
-                inner
-            );
-
-
-            button.addEventListener(
-                "click",
-
-                () => {
-                    flipCard(button);
-                }
-            );
-
-
-            fragment.appendChild(
-                button
-            );
-        }
-    );
-
-
-    grid.appendChild(fragment);
-}
-
-
-/* ==========================================================
-   VIRAR CARTA
-========================================================== */
-
-function flipCard(card) {
-    if (
-        boardLocked ||
-        card.classList.contains("is-flipped") ||
-        card.classList.contains("is-matched")
-    ) {
-        return;
-    }
-
-
-    startTimer();
-
-
-    card.classList.add(
-        "is-flipped"
-    );
-
-
-    if (!firstCard) {
-        firstCard =
-            card;
-
-
-        $("gameInstruction").textContent =
-            "Agora selecione a segunda carta.";
-
-
-        return;
-    }
-
-
-    secondCard =
-        card;
-
-
-    moves += 1;
-
-
-    updateStatus();
-
-
-    if (
-        firstCard.dataset.pair ===
-        secondCard.dataset.pair
-    ) {
-        registerMatch();
-
-    } else {
-        hideWrongCards();
-    }
-}
-
-
-/* ==========================================================
-   PAR ENCONTRADO
-========================================================== */
-
-function registerMatch() {
-    boardLocked =
-        true;
-
-
-    const letter =
-        firstCard.dataset.letter;
-
-
-    [
-        firstCard,
-        secondCard
-    ].forEach(
-        (card) => {
-            card.classList.add(
-                "is-matched"
-            );
-
-
-            card.disabled =
-                true;
-        }
-    );
-
-
-    matchedPairs += 1;
-
-
-    updateStatus();
-
-
-    $("gameInstruction").textContent =
-        `Muito bem! Você encontrou o par ${letter}.`;
-
-
-    window.setTimeout(
-        () => {
-            clearSelection();
-
-
-            boardLocked =
-                false;
-
-
-            if (
-                matchedPairs ===
-                TOTAL_PAIRS
-            ) {
-                finishGame();
-
-            } else {
-                $("gameInstruction").textContent =
-                    "Continue procurando os pares restantes.";
-            }
-        },
-
-        620
-    );
-}
-
-
-/* ==========================================================
-   PAR INCORRETO
-========================================================== */
-
-function hideWrongCards() {
-    boardLocked =
-        true;
-
-
-    firstCard.classList.add(
-        "is-wrong"
-    );
-
-
-    secondCard.classList.add(
-        "is-wrong"
-    );
-
-
-    $("gameInstruction").textContent =
-        "As letras não formam um par. Observe novamente.";
-
-
-    window.setTimeout(
-        () => {
-            firstCard.classList.remove(
-                "is-flipped",
-                "is-wrong"
-            );
-
-
-            secondCard.classList.remove(
-                "is-flipped",
-                "is-wrong"
-            );
-
-
-            clearSelection();
-
-
-            boardLocked =
-                false;
-
-
-            $("gameInstruction").textContent =
-                "Selecione duas novas cartas.";
-        },
-
-        980
-    );
-}
-
-
-function clearSelection() {
-    firstCard = null;
-    secondCard = null;
-}
-
-
-/* ==========================================================
-   CRONÔMETRO
-========================================================== */
-
-function startTimer() {
-    if (timerStarted) {
-        return;
-    }
-
-
-    timerStarted =
-        true;
-
-
-    timerInterval =
-        window.setInterval(
-            () => {
-                elapsedSeconds += 1;
-
-
-                $("timer").textContent =
-                    formatTime(
-                        elapsedSeconds
-                    );
-            },
-
-            1000
-        );
-}
-
-
-function stopTimer() {
-    if (
-        timerInterval !== null
-    ) {
-        window.clearInterval(
-            timerInterval
-        );
-    }
-
-
-    timerInterval =
-        null;
-
-
-    timerStarted =
-        false;
-}
-
-
-function formatTime(seconds) {
-    const minutes =
-        Math.floor(
-            seconds / 60
-        );
-
-
-    const remainingSeconds =
-        seconds % 60;
-
-
-    return (
-        `${String(minutes).padStart(2, "0")}:` +
-        `${String(remainingSeconds).padStart(2, "0")}`
-    );
-}
-
-
-/* ==========================================================
-   ATUALIZAR INFORMAÇÕES
-========================================================== */
-
-function updateStatus() {
-    $("movesCounter").textContent =
-        String(moves);
-
-
-    $("pairsCounter").textContent =
-        String(matchedPairs);
-
-
-    $("pairsProgressBar").style.width =
-        `${(
-            matchedPairs /
-            TOTAL_PAIRS
-        ) * 100}%`;
-
-
-    $("pairsProgress").setAttribute(
-        "aria-valuenow",
-        String(matchedPairs)
-    );
-}
-
-
-/* ==========================================================
-   REDEFINIR PARTIDA
-========================================================== */
-
-function resetGameState() {
-    stopTimer();
-
-
-    firstCard =
-        null;
-
-
-    secondCard =
-        null;
-
-
-    boardLocked =
-        false;
-
-
-    moves =
-        0;
-
-
-    matchedPairs =
-        0;
-
-
-    elapsedSeconds =
-        0;
-
-
-    $("movesCounter").textContent =
-        "0";
-
-
-    $("timer").textContent =
-        "00:00";
-
-
-    $("pairsCounter").textContent =
-        "0";
-
-
-    $("pairsProgressBar").style.width =
-        "0%";
-
-
-    $("pairsProgress").setAttribute(
-        "aria-valuenow",
-        "0"
-    );
-
-
-    $("gameInstruction").textContent =
-        "Selecione duas cartas para encontrar os pares correspondentes.";
-
-
-    $("completionPanel").hidden =
-        true;
-}
-
-
-/* ==========================================================
-   REINICIAR JOGO
-========================================================== */
-
-function restartGame() {
-    closeResultModal();
-
-
-    resetGameState();
-
-
-    createBoard();
-
-
-    showOnly(gameScreen);
-
-
-    document.body.classList.remove(
-        "page-locked"
-    );
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
-
-
-/* ==========================================================
-   FINALIZAR JOGO
-========================================================== */
-
-function finishGame() {
-    stopTimer();
-
-
-    $("finalMoves").textContent =
-        String(moves);
-
-
-    $("finalTime").textContent =
-        formatTime(
-            elapsedSeconds
-        );
-
-
-    $("gameInstruction").textContent =
-        "Parabéns! Todos os pares foram encontrados.";
-
-
-    $("completionPanel").hidden =
-        false;
-
-
-    window.setTimeout(
-        openResultModal,
-        520
-    );
-}
-
-
-/* ==========================================================
-   MODAL
-========================================================== */
-
-function openResultModal() {
-    $("resultModal").hidden =
-        false;
-
-
-    $("resultModal").setAttribute(
-        "aria-hidden",
-        "false"
-    );
-
-
-    document.body.classList.add(
-        "page-locked"
-    );
-}
-
-
-function closeResultModal() {
-    $("resultModal").hidden =
-        true;
-
-
-    $("resultModal").setAttribute(
-        "aria-hidden",
-        "true"
-    );
-
-
-    if (
-        !initialScreen.hidden
-    ) {
-        document.body.classList.add(
-            "page-locked"
-        );
-
-    } else {
-        document.body.classList.remove(
-            "page-locked"
-        );
-    }
-}
-
-
-/* ==========================================================
-   PRODUZIR A TELA DE SIGNIFICADOS
-========================================================== */
-
-function renderMeaningScreen() {
-    if (meaningRendered) {
-        return;
-    }
-
-
-    meaningRendered =
-        true;
-
-
-    const grid =
-        $("meaningGrid");
-
-
-    const fragment =
-        document.createDocumentFragment();
-
-
-    MEANINGS.forEach(
-        (item, index) => {
-            const card =
-                document.createElement(
-                    "article"
-                );
-
-
-            card.className =
-                "meaning-card";
-
-
-            card.innerHTML = `
-                <div class="meaning-images">
-
-                    <figure class="meaning-image-box symbol">
-
-                        <img
-                            src="${item.symbol}"
-                            alt="Símbolo ${item.name}"
-                            loading="lazy"
-                            decoding="async"
-                        />
-
-                        <figcaption class="meaning-image-label">
-                            SÍMBOLO
-                        </figcaption>
-
-                    </figure>
-
-
-                    <figure class="meaning-image-box">
-
-                        <img
-                            src="${item.illustration}"
-                            alt="Representação de ${item.translation}"
-                            loading="lazy"
-                            decoding="async"
-                        />
-
-                        <figcaption class="meaning-image-label">
-                            REPRESENTAÇÃO
-                        </figcaption>
-
-                    </figure>
+                    </div>
 
                 </div>
 
 
-                <div class="meaning-body">
+                <div class="preview-area">
 
-                    <p class="meaning-number">
-                        ADINKRA ${String(
-                            index + 1
-                        ).padStart(2, "0")}
+                    <!--
+                        As três imagens serão substituídas pelo JavaScript
+                        por imagens coloridas da pasta IMAGENS.
+                    -->
+                    <div
+                        class="preview-cards"
+                        aria-label="Prévia das imagens do jogo"
+                    >
+
+                        <div class="preview-card preview-card-left">
+
+                            <img
+                                id="previewImage1"
+                                alt=""
+                                width="960"
+                                height="540"
+                            />
+
+                        </div>
+
+
+                        <div class="preview-card preview-card-middle">
+
+                            <img
+                                id="previewImage2"
+                                alt=""
+                                width="960"
+                                height="540"
+                            />
+
+                        </div>
+
+
+                        <div class="preview-card preview-card-right">
+
+                            <img
+                                id="previewImage3"
+                                alt=""
+                                width="960"
+                                height="540"
+                            />
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================================================
+                         PAINEL DE CARREGAMENTO
+                    =================================================== -->
+                    <div
+                        id="loadingPanel"
+                        class="loading-panel"
+                        aria-live="polite"
+                    >
+
+                        <div class="loading-row">
+
+                            <p id="loadingText">
+                                Localizando as imagens na pasta IMAGENS...
+                            </p>
+
+                            <strong id="loadingPercentage">
+                                0%
+                            </strong>
+
+                        </div>
+
+
+                        <div
+                            id="loadingTrack"
+                            class="loading-track"
+                            role="progressbar"
+                            aria-label="Carregamento das imagens"
+                            aria-valuemin="0"
+                            aria-valuemax="21"
+                            aria-valuenow="0"
+                        >
+
+                            <span id="loadingBar"></span>
+
+                        </div>
+
+
+                        <p
+                            id="loadingCounter"
+                            class="loading-counter"
+                        >
+                            0 de 21 recursos preparados
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        id="localModeInformation"
+                        class="local-mode-information"
+                    >
+
+                        <span aria-hidden="true">
+                            ✓
+                        </span>
+
+                        <p>
+                            Imagens ativadas diretamente da pasta local
+                            <strong>IMAGENS</strong>.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        id="startButton"
+                        class="primary-button"
+                        type="button"
+                        hidden
+                        disabled
+                    >
+                        <span aria-hidden="true">✓</span>
+
+                        PRONTO PARA INICIAR
+                    </button>
+
+
+                    <!--
+                        Mantido desativado temporariamente.
+                    -->
+                    <button
+                        id="retryButton"
+                        class="secondary-button retry-button"
+                        type="button"
+                        hidden
+                        disabled
+                        aria-hidden="true"
+                        tabindex="-1"
+                    >
+                        TENTAR CARREGAR NOVAMENTE
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             TELA 2 — JOGO
+        =================================================== -->
+        <section
+            id="gameScreen"
+            class="screen game-screen"
+            aria-labelledby="gameTitle"
+            aria-hidden="true"
+            hidden
+        >
+
+            <header class="game-header">
+
+                <div class="game-title-area">
+
+                    <p class="eyebrow">
+                        ENCONTRE OS 10 PARES
+                    </p>
+
+                    <h2 id="gameTitle">
+                        JOGO DA MEMÓRIA COM ADINKRAS
+                    </h2>
+
+                </div>
+
+
+                <div class="game-controls">
+
+                    <button
+                        id="restartButton"
+                        class="control-button"
+                        type="button"
+                    >
+                        <span aria-hidden="true">↻</span>
+
+                        Reiniciar
+                    </button>
+
+
+                    <button
+                        id="homeButton"
+                        class="control-button"
+                        type="button"
+                    >
+                        <span aria-hidden="true">⌂</span>
+
+                        Tela inicial
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <!-- ==================================================
+                 INFORMAÇÕES DA PARTIDA
+            =================================================== -->
+            <section
+                class="game-status"
+                aria-label="Informações da partida"
+            >
+
+                <article class="status-card">
+
+                    <span class="status-label">
+                        Jogadas
+                    </span>
+
+                    <strong id="movesCounter">
+                        0
+                    </strong>
+
+                </article>
+
+
+                <article class="status-card">
+
+                    <span class="status-label">
+                        Tempo
+                    </span>
+
+                    <strong id="timer">
+                        00:00
+                    </strong>
+
+                </article>
+
+
+                <article class="status-card">
+
+                    <span class="status-label">
+                        Pares encontrados
+                    </span>
+
+                    <strong>
+                        <span id="pairsCounter">0</span>/10
+                    </strong>
+
+                </article>
+
+
+                <article class="status-card">
+
+                    <span class="status-label">
+                        Progresso
+                    </span>
+
+                    <div
+                        id="pairsProgress"
+                        class="pairs-progress"
+                        role="progressbar"
+                        aria-label="Pares encontrados"
+                        aria-valuemin="0"
+                        aria-valuemax="10"
+                        aria-valuenow="0"
+                    >
+
+                        <div
+                            id="pairsProgressBar"
+                            class="pairs-progress-bar"
+                        ></div>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <p
+                id="gameInstruction"
+                class="game-instruction"
+                aria-live="polite"
+            >
+                Selecione duas cartas para encontrar os pares correspondentes.
+            </p>
+
+
+            <!-- ==================================================
+                 TABULEIRO
+            =================================================== -->
+            <section
+                id="memoryGrid"
+                class="memory-grid"
+                aria-label="Cartas do jogo da memória"
+            >
+                <!-- Cartas produzidas pelo JavaScript -->
+            </section>
+
+
+            <!-- ==================================================
+                 PAINEL EXIBIDO DEPOIS DA CONCLUSÃO
+            =================================================== -->
+            <section
+                id="completionPanel"
+                class="completion-panel"
+                hidden
+            >
+
+                <div>
+
+                    <p class="eyebrow">
+                        TODOS OS PARES ENCONTRADOS
                     </p>
 
                     <h3>
-                        ${item.name}
+                        Agora descubra o significado de cada Adinkra.
                     </h3>
 
-                    <p class="meaning-translation">
-                        “${item.translation}”
+                </div>
+
+
+                <button
+                    id="accessMeaningButton"
+                    class="meaning-button"
+                    type="button"
+                >
+                    ACESSAR SIGNIFICADOS
+                </button>
+
+            </section>
+
+        </section>
+
+
+        <!-- ==================================================
+             TELA 3 — SIGNIFICADOS
+        =================================================== -->
+        <section
+            id="meaningScreen"
+            class="screen meaning-screen"
+            aria-labelledby="meaningTitle"
+            aria-hidden="true"
+            hidden
+        >
+
+            <header class="meaning-header">
+
+                <div class="meaning-title-area">
+
+                    <p class="eyebrow">
+                        CONHEÇA OS SÍMBOLOS
                     </p>
 
-                    <p class="meaning-description">
-                        ${item.description}
+                    <h2 id="meaningTitle">
+                        SIGNIFICADOS DAS ADINKRAS
+                    </h2>
+
+                    <p class="meaning-subtitle">
+                        Observe o símbolo, sua representação visual
+                        e o ensinamento associado.
                     </p>
 
                 </div>
-            `;
 
 
-            card
-                .querySelectorAll("img")
-                .forEach(
-                    (image) => {
-                        image.addEventListener(
-                            "error",
+                <div class="meaning-controls">
 
-                            () => {
-                                const isSymbol =
-                                    Boolean(
-                                        image.closest(
-                                            ".symbol"
-                                        )
-                                    );
+                    <button
+                        id="backToGameButton"
+                        class="control-button"
+                        type="button"
+                    >
+                        <span aria-hidden="true">←</span>
 
+                        Voltar ao jogo
+                    </button>
 
-                                image.src =
-                                    placeholderImage(
-                                        item.letter,
 
-                                        isSymbol
-                                            ? "symbol"
-                                            : "illustration",
+                    <button
+                        id="meaningHomeButton"
+                        class="control-button"
+                        type="button"
+                    >
+                        <span aria-hidden="true">⌂</span>
 
-                                        item.pair - 1
-                                    );
-                            },
+                        Tela inicial
+                    </button>
 
-                            {
-                                once: true
-                            }
-                        );
-                    }
-                );
+                </div>
 
+            </header>
 
-            fragment.appendChild(
-                card
-            );
-        }
-    );
 
+            <section
+                id="meaningGrid"
+                class="meaning-grid"
+                aria-label="Significados das Adinkras"
+            >
+                <!-- Conteúdo produzido pelo JavaScript -->
+            </section>
 
-    grid.appendChild(
-        fragment
-    );
-}
 
+            <footer class="meaning-footer">
 
-/* ==========================================================
-   ABRIR A TELA DE SIGNIFICADOS
-========================================================== */
+                <button
+                    id="meaningPlayAgainButton"
+                    class="primary-button"
+                    type="button"
+                >
+                    JOGAR NOVAMENTE
+                </button>
 
-function openMeaningScreen() {
-    closeResultModal();
+            </footer>
 
+        </section>
 
-    renderMeaningScreen();
+    </main>
 
 
-    showOnly(
-        meaningScreen
-    );
+    <!-- ==================================================
+         MODAL DE RESULTADO
+    =================================================== -->
+    <div
+        id="resultModal"
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="resultTitle"
+        aria-hidden="true"
+        hidden
+    >
 
+        <div class="modal-overlay"></div>
 
-    document.body.classList.remove(
-        "page-locked"
-    );
 
+        <div class="modal-content">
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
+            <div
+                class="result-symbol"
+                aria-hidden="true"
+            >
+                ★
+            </div>
 
 
-/* ==========================================================
-   VOLTAR AO JOGO CONCLUÍDO
-========================================================== */
+            <p class="eyebrow">
+                EXPERIÊNCIA CONCLUÍDA
+            </p>
 
-function backToCompletedGame() {
-    showOnly(
-        gameScreen
-    );
 
+            <h2 id="resultTitle">
+                Parabéns!
+            </h2>
 
-    document.body.classList.remove(
-        "page-locked"
-    );
 
+            <p class="result-message">
+                Você encontrou todos os pares do
+                Jogo da Memória com Adinkras.
+            </p>
 
-    window.scrollTo({
-        top:
-            document.body.scrollHeight,
 
-        behavior:
-            "smooth"
-    });
-}
+            <div class="result-grid">
 
+                <article>
 
-/* ==========================================================
-   SERVICE WORKER
-========================================================== */
+                    <span>
+                        Jogadas
+                    </span>
 
-function registerServiceWorker() {
-    if (
-        !(
-            "serviceWorker" in
-            navigator
-        )
-    ) {
-        return;
-    }
+                    <strong id="finalMoves">
+                        0
+                    </strong>
 
+                </article>
 
-    if (
-        ![
-            "https:",
-            "http:"
-        ].includes(
-            window.location.protocol
-        )
-    ) {
-        return;
-    }
 
+                <article>
 
-    navigator.serviceWorker
-        .register("sw.js")
-        .catch(
-            () => {
-                /*
-                    O jogo funciona mesmo
-                    sem o Service Worker.
-                */
-            }
-        );
-}
+                    <span>
+                        Tempo
+                    </span>
 
+                    <strong id="finalTime">
+                        00:00
+                    </strong>
 
-/* ==========================================================
-   EVENTOS
-========================================================== */
+                </article>
 
-$("startButton").addEventListener(
-    "click",
-    openGameScreen
-);
+            </div>
 
 
-$("restartButton").addEventListener(
-    "click",
-    restartGame
-);
+            <div class="modal-actions">
 
+                <button
+                    id="modalMeaningButton"
+                    class="meaning-button"
+                    type="button"
+                >
+                    ACESSAR SIGNIFICADOS
+                </button>
 
-$("homeButton").addEventListener(
-    "click",
-    returnToInitialScreen
-);
 
+                <button
+                    id="playAgainButton"
+                    class="primary-button"
+                    type="button"
+                >
+                    JOGAR NOVAMENTE
+                </button>
 
-$("accessMeaningButton").addEventListener(
-    "click",
-    openMeaningScreen
-);
 
+                <button
+                    id="modalHomeButton"
+                    class="secondary-button"
+                    type="button"
+                >
+                    VOLTAR À TELA INICIAL
+                </button>
 
-$("modalMeaningButton").addEventListener(
-    "click",
-    openMeaningScreen
-);
+            </div>
 
+        </div>
 
-$("playAgainButton").addEventListener(
-    "click",
-    restartGame
-);
+    </div>
 
 
-$("modalHomeButton").addEventListener(
-    "click",
-    returnToInitialScreen
-);
+    <script src="script.js"></script>
 
-
-$("backToGameButton").addEventListener(
-    "click",
-    backToCompletedGame
-);
-
-
-$("meaningHomeButton").addEventListener(
-    "click",
-    returnToInitialScreen
-);
-
-
-$("meaningPlayAgainButton").addEventListener(
-    "click",
-    restartGame
-);
-
-
-document.addEventListener(
-    "keydown",
-
-    (event) => {
-        if (
-            event.key === "Escape" &&
-            !$("resultModal").hidden
-        ) {
-            closeResultModal();
-        }
-    }
-);
-
-
-/* ==========================================================
-   INICIALIZAÇÃO
-========================================================== */
-
-preloadAllResources();
+</body>
+</html>
