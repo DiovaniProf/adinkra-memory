@@ -2,7 +2,7 @@
 
 
 /* ==========================================================
-   CONFIGURAÇÕES GERAIS
+   CONFIGURAÇÕES
 ========================================================== */
 
 const IMAGE_FOLDER = "IMAGENS";
@@ -15,8 +15,7 @@ const MAX_SIMULTANEOUS_LOADS = 5;
 
 
 /*
-    O código tenta localizar automaticamente
-    cada imagem nestes formatos.
+    Formatos aceitos para as imagens locais.
 */
 
 const IMAGE_EXTENSIONS = [
@@ -32,7 +31,7 @@ const IMAGE_EXTENSIONS = [
 
 
 /* ==========================================================
-   FUNÇÕES AUXILIARES PARA OS ENDEREÇOS
+   PRODUZIR POSSÍVEIS ENDEREÇOS LOCAIS
 ========================================================== */
 
 function createImageCandidates(fileName) {
@@ -44,14 +43,14 @@ function createImageCandidates(fileName) {
 
 
 function createCardBackCandidates() {
-    const names = [
+    const possibleNames = [
         "CARTA",
-        "carta",
-        "Carta"
+        "Carta",
+        "carta"
     ];
 
 
-    return names.flatMap(
+    return possibleNames.flatMap(
         (name) =>
             createImageCandidates(name)
     );
@@ -200,13 +199,15 @@ const CARDS = CARD_INFORMATION.map(
         ...card,
 
         candidates:
-            createImageCandidates(card.id)
+            createImageCandidates(
+                card.id
+            )
     })
 );
 
 
 /* ==========================================================
-   RECURSOS QUE SERÃO CARREGADOS
+   RECURSOS DA PASTA IMAGENS
 ========================================================== */
 
 const RESOURCES = [
@@ -214,29 +215,31 @@ const RESOURCES = [
         (card) => ({
             id: card.id,
             alt: card.alt,
-            candidates: card.candidates
+            candidates:
+                card.candidates
         })
     ),
 
     {
         id: CARD_BACK_ID,
         alt: "Arte do verso das cartas",
-        candidates: createCardBackCandidates()
+        candidates:
+            createCardBackCandidates()
     }
 ];
 
 
 /* ==========================================================
-   SIGNIFICADOS DAS ADINKRAS
+   SIGNIFICADOS
 ========================================================== */
 
 const MEANINGS = [
     {
-        pair: 1,
         symbolId: "img01",
         illustrationId: "img02",
 
-        name: "Sankofa",
+        name:
+            "Sankofa",
 
         translation:
             "Volte e busque",
@@ -248,11 +251,11 @@ const MEANINGS = [
     },
 
     {
-        pair: 2,
         symbolId: "img03",
         illustrationId: "img04",
 
-        name: "Duafe",
+        name:
+            "Duafe",
 
         translation:
             "Pente de madeira",
@@ -263,11 +266,11 @@ const MEANINGS = [
     },
 
     {
-        pair: 3,
         symbolId: "img05",
         illustrationId: "img06",
 
-        name: "Fafanto",
+        name:
+            "Fafanto",
 
         translation:
             "Borboleta",
@@ -280,11 +283,11 @@ const MEANINGS = [
     },
 
     {
-        pair: 4,
         symbolId: "img07",
         illustrationId: "img08",
 
-        name: "Ohene Kyiniie",
+        name:
+            "Ohene Kyiniie",
 
         translation:
             "Guarda-chuva do rei",
@@ -296,11 +299,11 @@ const MEANINGS = [
     },
 
     {
-        pair: 5,
         symbolId: "img09",
         illustrationId: "img10",
 
-        name: "Nkonsonkonson",
+        name:
+            "Nkonsonkonson",
 
         translation:
             "Elo de corrente",
@@ -313,11 +316,11 @@ const MEANINGS = [
     },
 
     {
-        pair: 6,
         symbolId: "img11",
         illustrationId: "img12",
 
-        name: "Ananse Ntontan",
+        name:
+            "Ananse Ntontan",
 
         translation:
             "Teia de aranha",
@@ -330,11 +333,11 @@ const MEANINGS = [
     },
 
     {
-        pair: 7,
         symbolId: "img13",
         illustrationId: "img14",
 
-        name: "Abe Dua",
+        name:
+            "Abe Dua",
 
         translation:
             "Palmeira",
@@ -347,11 +350,11 @@ const MEANINGS = [
     },
 
     {
-        pair: 8,
         symbolId: "img15",
         illustrationId: "img16",
 
-        name: "Kete Pa",
+        name:
+            "Kete Pa",
 
         translation:
             "Boa cama",
@@ -362,11 +365,11 @@ const MEANINGS = [
     },
 
     {
-        pair: 9,
         symbolId: "img17",
         illustrationId: "img18",
 
-        name: "Dwennimmen",
+        name:
+            "Dwennimmen",
 
         translation:
             "Chifres de carneiro",
@@ -378,11 +381,11 @@ const MEANINGS = [
     },
 
     {
-        pair: 10,
         symbolId: "img19",
         illustrationId: "img20",
 
-        name: "Denkyem",
+        name:
+            "Denkyem",
 
         translation:
             "Crocodilo",
@@ -435,12 +438,8 @@ const imageCache =
     new Map();
 
 
-const resolvedSourceCache =
-    new Map();
-
-
 /* ==========================================================
-   ESTADO DO JOGO
+   ESTADO
 ========================================================== */
 
 let resourcesReady =
@@ -451,7 +450,7 @@ let loadingInProgress =
     false;
 
 
-let fallbackCount =
+let missingFilesCount =
     0;
 
 
@@ -492,29 +491,25 @@ let meaningRendered =
 
 
 /* ==========================================================
-   CRIAR IMAGEM PROVISÓRIA EM CASO DE FALHA
+   REPRESENTAÇÃO DE SEGURANÇA
 ========================================================== */
 
 function createFallbackImage(
     text,
-    type = "illustration"
+    isCardBack = false
 ) {
-    const isBack =
-        type === "back";
-
-
-    const label =
-        isBack
-            ? "ADINKRA"
-            : text.toUpperCase();
-
-
     const mainText =
-        isBack
+        isCardBack
             ? "◈"
             : text
                 .replace("img", "")
                 .toUpperCase();
+
+
+    const bottomText =
+        isCardBack
+            ? "ADINKRA"
+            : text.toUpperCase();
 
 
     const svg = `
@@ -579,10 +574,10 @@ function createFallbackImage(
 
             <text
                 x="480"
-                y="${isBack ? 315 : 305}"
+                y="310"
                 text-anchor="middle"
                 font-family="Arial, Helvetica, sans-serif"
-                font-size="${isBack ? 130 : 150}"
+                font-size="${isCardBack ? 130 : 150}"
                 font-weight="900"
                 fill="#fff4cc"
             >
@@ -609,7 +604,7 @@ function createFallbackImage(
                 letter-spacing="5"
                 fill="#fff4cc"
             >
-                ${label}
+                ${bottomText}
             </text>
         </svg>
     `;
@@ -623,7 +618,7 @@ function createFallbackImage(
 
 
 /* ==========================================================
-   TENTAR CARREGAR UMA LISTA DE ENDEREÇOS
+   CARREGAR IMAGEM LOCAL
 ========================================================== */
 
 function loadImageFromCandidates(resource) {
@@ -638,7 +633,7 @@ function loadImageFromCandidates(resource) {
                     candidateIndex >=
                     resource.candidates.length
                 ) {
-                    fallbackCount += 1;
+                    missingFilesCount += 1;
 
 
                     const fallback =
@@ -657,25 +652,15 @@ function loadImageFromCandidates(resource) {
                             );
 
 
-                            resolvedSourceCache.set(
-                                resource.id,
-                                fallback.src
-                            );
-
-
-                            resolve({
-                                resource,
-                                usedFallback: true
-                            });
+                            resolve();
                         };
 
 
                     fallback.src =
                         createFallbackImage(
                             resource.id,
-                            resource.id === CARD_BACK_ID
-                                ? "back"
-                                : "illustration"
+                            resource.id ===
+                                CARD_BACK_ID
                         );
 
 
@@ -727,16 +712,7 @@ function loadImageFromCandidates(resource) {
                         );
 
 
-                        resolvedSourceCache.set(
-                            resource.id,
-                            candidate
-                        );
-
-
-                        resolve({
-                            resource,
-                            usedFallback: false
-                        });
+                        resolve();
                     };
 
 
@@ -756,7 +732,7 @@ function loadImageFromCandidates(resource) {
 
 
 /* ==========================================================
-   PREPARAR TODAS AS IMAGENS
+   PRÉ-CARREGAR AS 21 IMAGENS
 ========================================================== */
 
 async function preloadAllResources() {
@@ -773,14 +749,11 @@ async function preloadAllResources() {
         false;
 
 
-    fallbackCount =
+    missingFilesCount =
         0;
 
 
     imageCache.clear();
-
-
-    resolvedSourceCache.clear();
 
 
     $("startButton").hidden =
@@ -878,7 +851,7 @@ async function preloadAllResources() {
 
 
 /* ==========================================================
-   ATUALIZAR BARRA DE CARREGAMENTO
+   ATUALIZAR CARREGAMENTO
 ========================================================== */
 
 function updateLoadingProgress(
@@ -931,16 +904,16 @@ function finishLoading() {
         `${RESOURCES.length} recursos preparados`;
 
 
-    if (fallbackCount === 0) {
+    if (missingFilesCount === 0) {
         $("loadingText").textContent =
-            "Todas as imagens locais estão carregadas e prontas.";
+            "Todas as imagens locais estão prontas.";
 
         $("localModeInformation").innerHTML = `
             <span aria-hidden="true">✓</span>
 
             <p>
-                As 20 imagens e a imagem
-                <strong>CARTA</strong>
+                As imagens <strong>img01 a img20</strong>
+                e a imagem <strong>CARTA</strong>
                 foram encontradas na pasta
                 <strong>IMAGENS</strong>.
             </p>
@@ -948,15 +921,15 @@ function finishLoading() {
 
     } else {
         $("loadingText").textContent =
-            "O jogo está pronto, mas alguns arquivos não foram encontrados.";
+            "O jogo está disponível, mas alguns arquivos não foram encontrados.";
 
         $("localModeInformation").innerHTML = `
             <span aria-hidden="true">!</span>
 
             <p>
-                ${fallbackCount}
-                recurso(s) receberam uma representação provisória.
-                Confira os nomes dos arquivos na pasta
+                ${missingFilesCount}
+                arquivo(s) receberam uma representação provisória.
+                Confira os nomes dentro da pasta
                 <strong>IMAGENS</strong>.
             </p>
         `;
@@ -1028,7 +1001,7 @@ function shuffle(items) {
 
 
 /* ==========================================================
-   CLONAR IMAGEM JÁ CARREGADA
+   CLONAR IMAGEM
 ========================================================== */
 
 function cloneCachedImage(
@@ -1073,7 +1046,7 @@ function cloneCachedImage(
 
 
 /* ==========================================================
-   TROCAR AS TRÊS CARTAS DA TELA INICIAL
+   TROCAR IMAGENS DA ABERTURA
 ========================================================== */
 
 function refreshInitialPreview(
@@ -1083,11 +1056,6 @@ function refreshInitialPreview(
         return;
     }
 
-
-    /*
-        As imagens pares são as representações coloridas:
-        img02, img04, img06... img20.
-    */
 
     const coloredCards =
         CARDS.filter(
@@ -1158,7 +1126,7 @@ function refreshInitialPreview(
 
 
 /* ==========================================================
-   MOSTRAR APENAS UMA TELA
+   MOSTRAR UMA TELA
 ========================================================== */
 
 function showOnly(screen) {
@@ -1259,7 +1227,7 @@ function openGameScreen() {
 
 
 /* ==========================================================
-   RETORNAR À TELA INICIAL
+   TELA INICIAL
 ========================================================== */
 
 function returnToInitialScreen() {
@@ -1296,7 +1264,7 @@ function returnToInitialScreen() {
 
 
 /* ==========================================================
-   CRIAR O TABULEIRO
+   CRIAR TABULEIRO
 ========================================================== */
 
 function createBoard() {
@@ -1363,10 +1331,6 @@ function createBoard() {
                 "memory-card-inner";
 
 
-            /*
-                VERSO — imagem CARTA.
-            */
-
             const back =
                 document.createElement(
                     "span"
@@ -1390,10 +1354,6 @@ function createBoard() {
                 )
             );
 
-
-            /*
-                FRENTE — img01 até img20.
-            */
 
             const front =
                 document.createElement(
@@ -1449,7 +1409,7 @@ function createBoard() {
 
 
 /* ==========================================================
-   VIRAR UMA CARTA
+   VIRAR CARTA
 ========================================================== */
 
 function flipCard(card) {
@@ -1516,7 +1476,7 @@ function flipCard(card) {
 
 
 /* ==========================================================
-   VERIFICAR O PAR
+   VERIFICAR PAR
 ========================================================== */
 
 function checkSelectedPair() {
@@ -1535,7 +1495,7 @@ function checkSelectedPair() {
 
 
 /* ==========================================================
-   REGISTRAR PAR ENCONTRADO
+   PAR ENCONTRADO
 ========================================================== */
 
 function registerMatch() {
@@ -1602,7 +1562,7 @@ function registerMatch() {
 
 
 /* ==========================================================
-   ESCONDER CARTAS INCORRETAS
+   CARTAS INCORRETAS
 ========================================================== */
 
 function hideWrongCards() {
@@ -1749,7 +1709,7 @@ function formatTime(seconds) {
 
 
 /* ==========================================================
-   ATUALIZAR PAINEL DO JOGO
+   ATUALIZAR PAINEL
 ========================================================== */
 
 function updateStatus() {
@@ -1843,7 +1803,7 @@ function resetGameState() {
 
 
 /* ==========================================================
-   REINICIAR JOGO
+   REINICIAR
 ========================================================== */
 
 function restartGame() {
@@ -1874,7 +1834,7 @@ function restartGame() {
 
 
 /* ==========================================================
-   FINALIZAR PARTIDA
+   FINALIZAR
 ========================================================== */
 
 function finishGame() {
@@ -1962,7 +1922,7 @@ function closeResultModal() {
 
 
 /* ==========================================================
-   PRODUZIR TELA DE SIGNIFICADOS
+   TELA DE SIGNIFICADOS
 ========================================================== */
 
 function renderMeaningScreen() {
@@ -2012,10 +1972,6 @@ function renderMeaningScreen() {
                 "meaning-images";
 
 
-            /*
-                Símbolo.
-            */
-
             const symbolFigure =
                 document.createElement(
                     "figure"
@@ -2052,10 +2008,6 @@ function renderMeaningScreen() {
                 symbolLabel
             );
 
-
-            /*
-                Representação colorida.
-            */
 
             const illustrationFigure =
                 document.createElement(
@@ -2099,10 +2051,6 @@ function renderMeaningScreen() {
                 illustrationFigure
             );
 
-
-            /*
-                Texto explicativo.
-            */
 
             const body =
                 document.createElement(
@@ -2196,7 +2144,7 @@ function renderMeaningScreen() {
 
 
 /* ==========================================================
-   ABRIR TELA DE SIGNIFICADOS
+   ABRIR SIGNIFICADOS
 ========================================================== */
 
 function openMeaningScreen() {
@@ -2224,7 +2172,7 @@ function openMeaningScreen() {
 
 
 /* ==========================================================
-   VOLTAR AO JOGO CONCLUÍDO
+   VOLTAR AO JOGO
 ========================================================== */
 
 function backToCompletedGame() {
@@ -2276,7 +2224,7 @@ function registerServiceWorker() {
         .catch(
             () => {
                 /*
-                    O jogo funciona mesmo
+                    O jogo continua funcionando
                     sem o Service Worker.
                 */
             }

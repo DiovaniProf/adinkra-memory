@@ -35,7 +35,6 @@
             class="screen initial-screen"
             aria-labelledby="initialTitle"
         >
-
             <div class="initial-container">
 
                 <div class="initial-copy">
@@ -70,8 +69,8 @@
                 <div class="preview-area">
 
                     <!--
-                        As três imagens serão substituídas pelo JavaScript
-                        por imagens coloridas da pasta IMAGENS.
+                        As três imagens serão preenchidas pelo JavaScript
+                        com imagens coloridas da pasta IMAGENS.
                     -->
                     <div
                         class="preview-cards"
@@ -117,7 +116,7 @@
 
 
                     <!-- ==================================================
-                         PAINEL DE CARREGAMENTO
+                         CARREGAMENTO
                     =================================================== -->
                     <div
                         id="loadingPanel"
@@ -147,9 +146,7 @@
                             aria-valuemax="21"
                             aria-valuenow="0"
                         >
-
                             <span id="loadingBar"></span>
-
                         </div>
 
 
@@ -173,8 +170,8 @@
                         </span>
 
                         <p>
-                            Imagens ativadas diretamente da pasta local
-                            <strong>IMAGENS</strong>.
+                            O jogo utiliza somente os arquivos locais
+                            da pasta <strong>IMAGENS</strong>.
                         </p>
 
                     </div>
@@ -194,7 +191,7 @@
 
 
                     <!--
-                        Mantido desativado temporariamente.
+                        Mantido temporariamente invisível e desativado.
                     -->
                     <button
                         id="retryButton"
@@ -211,7 +208,6 @@
                 </div>
 
             </div>
-
         </section>
 
 
@@ -331,12 +327,10 @@
                         aria-valuemax="10"
                         aria-valuenow="0"
                     >
-
                         <div
                             id="pairsProgressBar"
                             class="pairs-progress-bar"
                         ></div>
-
                     </div>
 
                 </article>
@@ -366,7 +360,7 @@
 
 
             <!-- ==================================================
-                 PAINEL EXIBIDO DEPOIS DA CONCLUSÃO
+                 CONCLUSÃO DA PARTIDA
             =================================================== -->
             <section
                 id="completionPanel"
