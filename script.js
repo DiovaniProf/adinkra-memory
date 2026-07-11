@@ -2,20 +2,33 @@
 
 
 /* ==========================================================
-   CONFIGURAÇÕES
+   CONFIGURAÇÕES DOS ARQUIVOS
 ========================================================== */
 
-const IMAGE_FOLDER = "IMAGENS";
+/*
+    A pasta deve estar no mesmo nível do index.html
+    e deve ser chamada exatamente imagens.
+*/
+
+const IMAGE_FOLDER = "imagens";
+
+
+/*
+    A imagem utilizada no verso das cartas
+    deve possuir o nome capa.
+*/
+
+const CARD_BACK_ID = "capa";
+
 
 const TOTAL_PAIRS = 10;
-
-const CARD_BACK_ID = "CARTA";
 
 const MAX_SIMULTANEOUS_LOADS = 5;
 
 
 /*
-    O primeiro formato será testado antes dos demais.
+    O sistema procura automaticamente os arquivos
+    nestes formatos.
 */
 
 const IMAGE_EXTENSIONS = [
@@ -31,7 +44,7 @@ const IMAGE_EXTENSIONS = [
 
 
 /* ==========================================================
-   SIGNIFICADOS E RELAÇÃO DOS PARES
+   SIGNIFICADOS E ORGANIZAÇÃO DOS PARES
 ========================================================== */
 
 const MEANINGS = [
@@ -186,8 +199,18 @@ const MEANINGS = [
 
 
 /* ==========================================================
-   PRODUÇÃO AUTOMÁTICA DAS 20 CARTAS
+   PRODUÇÃO DAS 20 CARTAS
 ========================================================== */
+
+/*
+    Relação automática:
+
+    img01 + img02 = par 1
+    img03 + img04 = par 2
+    img05 + img06 = par 3
+    ...
+    img19 + img20 = par 10
+*/
 
 const CARDS = MEANINGS.flatMap(
     (meaning, meaningIndex) => {
@@ -229,7 +252,7 @@ const CARDS = MEANINGS.flatMap(
 
 
 /* ==========================================================
-   CAMINHOS POSSÍVEIS DAS IMAGENS
+   ENDEREÇOS DAS IMAGENS
 ========================================================== */
 
 function createImageCandidates(fileName) {
@@ -240,23 +263,8 @@ function createImageCandidates(fileName) {
 }
 
 
-function createCardBackCandidates() {
-    const possibleNames = [
-        "CARTA",
-        "Carta",
-        "carta"
-    ];
-
-
-    return possibleNames.flatMap(
-        (name) =>
-            createImageCandidates(name)
-    );
-}
-
-
 /* ==========================================================
-   RECURSOS QUE SERÃO PRÉ-CARREGADOS
+   RECURSOS QUE SERÃO CARREGADOS
 ========================================================== */
 
 const RESOURCES = [
@@ -280,10 +288,12 @@ const RESOURCES = [
             CARD_BACK_ID,
 
         alt:
-            "Imagem do verso das cartas",
+            "Imagem da capa das cartas",
 
         candidates:
-            createCardBackCandidates()
+            createImageCandidates(
+                CARD_BACK_ID
+            )
     }
 ];
 
@@ -395,7 +405,7 @@ let meaningRendered =
 
 
 /* ==========================================================
-   CRIAR IMAGEM PROVISÓRIA DE SEGURANÇA
+   IMAGEM PROVISÓRIA DE SEGURANÇA
 ========================================================== */
 
 function createFallbackImage(
@@ -522,7 +532,7 @@ function createFallbackImage(
 
 
 /* ==========================================================
-   CARREGAR UMA IMAGEM LOCAL
+   CARREGAR UMA IMAGEM DA PASTA
 ========================================================== */
 
 function loadImageFromCandidates(resource) {
@@ -617,8 +627,8 @@ function loadImageFromCandidates(resource) {
 
                         } catch (error) {
                             /*
-                                O evento load confirma que
-                                a imagem já pode ser exibida.
+                                A imagem já está disponível
+                                após o evento load.
                             */
                         }
 
@@ -720,7 +730,7 @@ async function preloadAllResources() {
 
             $("loadingText").textContent =
                 resource.id === CARD_BACK_ID
-                    ? "Preparando a imagem CARTA..."
+                    ? "Preparando a imagem capa..."
                     : `Preparando ${resource.id}...`;
 
 
@@ -774,7 +784,7 @@ async function preloadAllResources() {
 
 
 /* ==========================================================
-   ATUALIZAR BARRA DE CARREGAMENTO
+   ATUALIZAR CARREGAMENTO
 ========================================================== */
 
 function updateLoadingProgress(
@@ -837,15 +847,15 @@ function finishLoading() {
 
             <p>
                 As imagens <strong>img01 a img20</strong>
-                e a imagem <strong>CARTA</strong>
+                e a imagem <strong>capa</strong>
                 foram encontradas na pasta
-                <strong>IMAGENS</strong>.
+                <strong>imagens</strong>.
             </p>
         `;
 
     } else {
         $("loadingText").textContent =
-            "O jogo está pronto com imagens provisórias de segurança.";
+            "O jogo está pronto com representações provisórias.";
 
 
         $("localModeInformation").innerHTML = `
@@ -854,7 +864,8 @@ function finishLoading() {
             <p>
                 ${missingFilesCount}
                 arquivo(s) não foram encontrados.
-                O jogo substituiu esses arquivos por imagens provisórias.
+                Confira os nomes dos arquivos na pasta
+                <strong>imagens</strong>.
             </p>
         `;
     }
@@ -887,7 +898,7 @@ function finishLoading() {
 
 
 /* ==========================================================
-   EMBARALHAR LISTA
+   EMBARALHAR
 ========================================================== */
 
 function shuffle(items) {
@@ -925,7 +936,7 @@ function shuffle(items) {
 
 
 /* ==========================================================
-   CLONAR IMAGEM DO CACHE
+   CLONAR IMAGEM CARREGADA
 ========================================================== */
 
 function cloneCachedImage(
@@ -970,7 +981,7 @@ function cloneCachedImage(
 
 
 /* ==========================================================
-   TROCAR AS TRÊS IMAGENS DA TELA INICIAL
+   ALTERAR AS TRÊS IMAGENS DA ABERTURA
 ========================================================== */
 
 function refreshInitialPreview(
@@ -1056,7 +1067,7 @@ function refreshInitialPreview(
 
 
 /* ==========================================================
-   MOSTRAR APENAS UMA TELA
+   EXIBIR UMA TELA
 ========================================================== */
 
 function showOnlyScreen(targetScreen) {
@@ -1191,7 +1202,7 @@ function returnToInitialScreen() {
 
 
 /* ==========================================================
-   CRIAR O TABULEIRO
+   CRIAR TABULEIRO
 ========================================================== */
 
 function createBoard() {
@@ -1259,7 +1270,7 @@ function createBoard() {
 
 
             /*
-                VERSO DA CARTA
+                VERSO DA CARTA — imagem capa.
             */
 
             const cardBack =
@@ -1287,7 +1298,7 @@ function createBoard() {
 
 
             /*
-                FRENTE DA CARTA
+                FRENTE DA CARTA — img01 até img20.
             */
 
             const cardFront =
@@ -1500,7 +1511,7 @@ function registerMatchedPair() {
 
 
 /* ==========================================================
-   CARTAS INCORRETAS
+   PAR INCORRETO
 ========================================================== */
 
 function hideIncorrectCards() {
@@ -1647,7 +1658,7 @@ function formatTime(totalSeconds) {
 
 
 /* ==========================================================
-   ATUALIZAR PAINEL
+   ATUALIZAR INFORMAÇÕES
 ========================================================== */
 
 function updateGameStatus() {
@@ -1780,7 +1791,7 @@ function restartGame() {
 
 
 /* ==========================================================
-   FINALIZAR JOGO
+   FINALIZAR PARTIDA
 ========================================================== */
 
 function finishGame() {
@@ -1862,7 +1873,7 @@ function closeResultModal() {
 
 
 /* ==========================================================
-   PRODUZIR A TELA DE SIGNIFICADOS
+   CRIAR TELA DE SIGNIFICADOS
 ========================================================== */
 
 function renderMeaningScreen() {
@@ -1901,10 +1912,6 @@ function renderMeaningScreen() {
             article.className =
                 "meaning-card";
 
-
-            /*
-                ÁREA DAS DUAS IMAGENS
-            */
 
             const imagesContainer =
                 document.createElement(
@@ -1945,10 +1952,6 @@ function renderMeaningScreen() {
                 illustrationFigure
             );
 
-
-            /*
-                ÁREA DOS TEXTOS
-            */
 
             const meaningBody =
                 document.createElement(
@@ -2042,7 +2045,7 @@ function renderMeaningScreen() {
 
 
 /* ==========================================================
-   CRIAR FIGURA DA TELA DE SIGNIFICADOS
+   CRIAR IMAGEM DA TELA DE SIGNIFICADOS
 ========================================================== */
 
 function createMeaningFigure(
@@ -2169,8 +2172,8 @@ function registerServiceWorker() {
         .catch(
             () => {
                 /*
-                    O jogo continua funcionando
-                    normalmente sem o Service Worker.
+                    O jogo funciona normalmente
+                    sem o Service Worker.
                 */
             }
         );
@@ -2178,7 +2181,7 @@ function registerServiceWorker() {
 
 
 /* ==========================================================
-   EVENTOS DOS BOTÕES
+   EVENTOS
 ========================================================== */
 
 $("startButton").addEventListener(
@@ -2246,10 +2249,6 @@ $("modalOverlay").addEventListener(
     closeResultModal
 );
 
-
-/* ==========================================================
-   TECLA ESCAPE
-========================================================== */
 
 document.addEventListener(
     "keydown",

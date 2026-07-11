@@ -15,7 +15,7 @@
     --green-light: #c9f8d2;
 
     --text: #fffaf0;
-    --soft: rgba(255, 250, 240, 0.8);
+    --soft: rgba(255, 250, 240, 0.82);
     --dark-text: #281308;
 
     --border: rgba(245, 198, 95, 0.5);
@@ -150,6 +150,20 @@ img {
         max(14px, env(safe-area-inset-left));
 
     background:
+        repeating-linear-gradient(
+            45deg,
+            transparent 0,
+            transparent 42px,
+            rgba(245, 198, 95, 0.018) 42px,
+            rgba(245, 198, 95, 0.018) 44px
+        ),
+        repeating-linear-gradient(
+            -45deg,
+            transparent 0,
+            transparent 68px,
+            rgba(245, 198, 95, 0.014) 68px,
+            rgba(245, 198, 95, 0.014) 70px
+        ),
         radial-gradient(
             circle at 50% 0%,
             rgba(245, 198, 95, 0.24),
@@ -309,7 +323,7 @@ img {
 
 
 /* ==========================================================
-   TRÊS CARTAS DA TELA INICIAL
+   CARTAS DA TELA INICIAL
 ========================================================== */
 
 .preview-area {
@@ -434,7 +448,7 @@ img {
 
 
 /* ==========================================================
-   CARREGAMENTO
+   PAINEL DE CARREGAMENTO
 ========================================================== */
 
 .loading-panel {
@@ -742,6 +756,13 @@ img {
         max(14px, env(safe-area-inset-left));
 
     background:
+        repeating-linear-gradient(
+            45deg,
+            transparent 0,
+            transparent 55px,
+            rgba(245, 198, 95, 0.018) 55px,
+            rgba(245, 198, 95, 0.018) 57px
+        ),
         radial-gradient(
             circle at 10% 5%,
             rgba(245, 198, 95, 0.16),
@@ -1061,7 +1082,7 @@ img {
 
 
 /* ==========================================================
-   VERSO — IMAGEM CARTA
+   VERSO — IMAGEM CAPA
 ========================================================== */
 
 .memory-card-back {
@@ -1171,7 +1192,7 @@ img {
 
 
 /* ==========================================================
-   CONCLUSÃO
+   CONCLUSÃO DO JOGO
 ========================================================== */
 
 .completion-panel {
@@ -1398,7 +1419,7 @@ img {
 
 
 /* ==========================================================
-   MODAL
+   MODAL DE RESULTADO
 ========================================================== */
 
 .modal {
@@ -1615,7 +1636,7 @@ img {
 
 
 /* ==========================================================
-   SIGNIFICADOS EM TELAS MÉDIAS
+   TELAS MÉDIAS
 ========================================================== */
 
 @media (max-width: 1260px) {

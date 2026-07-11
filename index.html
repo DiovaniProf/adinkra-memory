@@ -28,7 +28,7 @@
     <main class="app">
 
         <!-- ==================================================
-             TELA 1 — TELA INICIAL
+             TELA 1 — APRESENTAÇÃO
         =================================================== -->
         <section
             id="initialScreen"
@@ -49,6 +49,7 @@
                     </h1>
 
                     <div class="introductory-content">
+
                         <p>
                             As Adinkras são símbolos visuais ligados aos povos Akan,
                             especialmente aos Asante, em Gana. Elas representam ideias,
@@ -59,6 +60,7 @@
                             Cada símbolo pode inspirar atitudes positivas para a
                             convivência em comunidade.
                         </p>
+
                     </div>
 
                 </div>
@@ -67,8 +69,8 @@
                 <div class="preview-area">
 
                     <!--
-                        O JavaScript insere três imagens coloridas
-                        da pasta IMAGENS.
+                        As três imagens serão inseridas pelo JavaScript
+                        depois que os arquivos da pasta imagens forem carregados.
                     -->
                     <div
                         class="preview-cards"
@@ -108,7 +110,7 @@
 
 
                     <!-- ==================================================
-                         PAINEL DE CARREGAMENTO
+                         CARREGAMENTO DOS ARQUIVOS
                     =================================================== -->
                     <div
                         id="loadingPanel"
@@ -161,8 +163,8 @@
                         </span>
 
                         <p>
-                            O jogo utiliza as imagens locais da pasta
-                            <strong>IMAGENS</strong>.
+                            O jogo está conectado à pasta local
+                            <strong>imagens</strong>.
                         </p>
                     </div>
 
@@ -219,6 +221,7 @@
                         type="button"
                     >
                         <span aria-hidden="true">↻</span>
+
                         Reiniciar
                     </button>
 
@@ -229,6 +232,7 @@
                         type="button"
                     >
                         <span aria-hidden="true">⌂</span>
+
                         Tela inicial
                     </button>
 
@@ -238,7 +242,7 @@
 
 
             <!-- ==================================================
-                 INFORMAÇÕES DA PARTIDA
+                 PAINEL DE INFORMAÇÕES
             =================================================== -->
             <section
                 class="game-status"
@@ -246,6 +250,7 @@
             >
 
                 <article class="status-card">
+
                     <span class="status-label">
                         Jogadas
                     </span>
@@ -253,10 +258,12 @@
                     <strong id="movesCounter">
                         0
                     </strong>
+
                 </article>
 
 
                 <article class="status-card">
+
                     <span class="status-label">
                         Tempo
                     </span>
@@ -264,10 +271,12 @@
                     <strong id="timer">
                         00:00
                     </strong>
+
                 </article>
 
 
                 <article class="status-card">
+
                     <span class="status-label">
                         Pares encontrados
                     </span>
@@ -275,10 +284,12 @@
                     <strong>
                         <span id="pairsCounter">0</span>/10
                     </strong>
+
                 </article>
 
 
                 <article class="status-card status-progress-card">
+
                     <span class="status-label">
                         Progresso
                     </span>
@@ -297,6 +308,7 @@
                             class="pairs-progress-bar"
                         ></div>
                     </div>
+
                 </article>
 
             </section>
@@ -319,12 +331,12 @@
                 class="memory-grid"
                 aria-label="Cartas do jogo da memória"
             >
-                <!-- Cartas produzidas pelo JavaScript -->
+                <!-- Cartas criadas pelo JavaScript -->
             </section>
 
 
             <!-- ==================================================
-                 PAINEL APÓS ENCONTRAR TODOS OS PARES
+                 PAINEL APÓS ENCONTRAR OS 10 PARES
             =================================================== -->
             <section
                 id="completionPanel"
@@ -397,6 +409,7 @@
                         type="button"
                     >
                         <span aria-hidden="true">←</span>
+
                         Voltar ao jogo
                     </button>
 
@@ -407,6 +420,7 @@
                         type="button"
                     >
                         <span aria-hidden="true">⌂</span>
+
                         Tela inicial
                     </button>
 
@@ -420,7 +434,7 @@
                 class="meaning-grid"
                 aria-label="Significados das Adinkras"
             >
-                <!-- Conteúdo produzido pelo JavaScript -->
+                <!-- Conteúdo criado pelo JavaScript -->
             </section>
 
 
@@ -489,6 +503,7 @@
             <div class="result-grid">
 
                 <article>
+
                     <span>
                         Jogadas
                     </span>
@@ -496,10 +511,12 @@
                     <strong id="finalMoves">
                         0
                     </strong>
+
                 </article>
 
 
                 <article>
+
                     <span>
                         Tempo
                     </span>
@@ -507,6 +524,7 @@
                     <strong id="finalTime">
                         00:00
                     </strong>
+
                 </article>
 
             </div>
